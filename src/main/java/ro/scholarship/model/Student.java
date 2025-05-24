@@ -1,28 +1,49 @@
 package ro.scholarship.model;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "studenti")
 public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "studenti_seq_gen")
+    @SequenceGenerator(name = "studenti_seq_gen", sequenceName = "studenti_seq", allocationSize = 1)
     private int id;
+
+    @Column(nullable = false)
     private String nume;
+
+    @Column(nullable = false)
     private String prenume;
+
+    @Column(unique = true)
     private String cnp;
+
     private String email;
     private String telefon;
-    private Specializare specializare;
-    private int anStudiu;
-    private float medieSemestruAnterior;
-    private boolean areRestante;
-    private List<BursaAcordata> burseAcordate;
 
-    public Student() {
-        this.burseAcordate = new ArrayList<>();
-    }
+    @ManyToOne
+    @JoinColumn(name = "specializare_id")
+    private Specializare specializare;
+
+    @Column(name = "an_studiu")
+    private int anStudiu;
+
+    @Column(name = "medie_semestru_anterior")
+    private float medieSemestruAnterior;
+
+    @Column(name = "are_restante")
+    private int areRestante; // 0 = nu, 1 = da (mapare pentru Oracle)
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BursaAcordata> burseAcordate = new ArrayList<>();
+
+    public Student() {}
 
     public Student(String nume, String prenume, String cnp, int anStudiu) {
-        this();
         this.nume = nume;
         this.prenume = prenume;
         this.cnp = cnp;
@@ -32,7 +53,6 @@ public class Student {
     public Student(int id, String nume, String prenume, String cnp, String email,
                    String telefon, Specializare specializare, int anStudiu,
                    float medieSemestruAnterior, boolean areRestante) {
-        this();
         this.id = id;
         this.nume = nume;
         this.prenume = prenume;
@@ -42,102 +62,49 @@ public class Student {
         this.specializare = specializare;
         this.anStudiu = anStudiu;
         this.medieSemestruAnterior = medieSemestruAnterior;
-        this.areRestante = areRestante;
+        this.areRestante = areRestante ? 1 : 0;
     }
 
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getNume() { return nume; }
+    public void setNume(String nume) { this.nume = nume; }
 
-    public String getNume() {
-        return nume;
-    }
+    public String getPrenume() { return prenume; }
+    public void setPrenume(String prenume) { this.prenume = prenume; }
 
-    public void setNume(String nume) {
-        this.nume = nume;
-    }
+    public String getCnp() { return cnp; }
+    public void setCnp(String cnp) { this.cnp = cnp; }
 
-    public String getPrenume() {
-        return prenume;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setPrenume(String prenume) {
-        this.prenume = prenume;
-    }
+    public String getTelefon() { return telefon; }
+    public void setTelefon(String telefon) { this.telefon = telefon; }
 
-    public String getCnp() {
-        return cnp;
-    }
+    public Specializare getSpecializare() { return specializare; }
+    public void setSpecializare(Specializare specializare) { this.specializare = specializare; }
 
-    public void setCnp(String cnp) {
-        this.cnp = cnp;
-    }
+    public int getAnStudiu() { return anStudiu; }
+    public void setAnStudiu(int anStudiu) { this.anStudiu = anStudiu; }
 
-    public String getEmail() {
-        return email;
-    }
+    public float getMedieSemestruAnterior() { return medieSemestruAnterior; }
+    public void setMedieSemestruAnterior(float medieSemestruAnterior) { this.medieSemestruAnterior = medieSemestruAnterior; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public int getAreRestante() { return areRestante; }
+    public void setAreRestante(int areRestante) { this.areRestante = areRestante; }
+    public boolean isAreRestante() { return areRestante == 1; }
+    public void setAreRestante(boolean areRestante) { this.areRestante = areRestante ? 1 : 0; }
 
-    public String getTelefon() {
-        return telefon;
-    }
-
-    public void setTelefon(String telefon) {
-        this.telefon = telefon;
-    }
-
-    public Specializare getSpecializare() {
-        return specializare;
-    }
-
-    public void setSpecializare(Specializare specializare) {
-        this.specializare = specializare;
-    }
-
-    public int getAnStudiu() {
-        return anStudiu;
-    }
-
-    public void setAnStudiu(int anStudiu) {
-        this.anStudiu = anStudiu;
-    }
-
-    public float getMedieSemestruAnterior() {
-        return medieSemestruAnterior;
-    }
-
-    public void setMedieSemestruAnterior(float medieSemestruAnterior) {
-        this.medieSemestruAnterior = medieSemestruAnterior;
-    }
-
-    public boolean isAreRestante() {
-        return areRestante;
-    }
-
-    public void setAreRestante(boolean areRestante) {
-        this.areRestante = areRestante;
-    }
-
-    public List<BursaAcordata> getBurseAcordate() {
-        return burseAcordate;
-    }
-
-    public void setBurseAcordate(List<BursaAcordata> burseAcordate) {
-        this.burseAcordate = burseAcordate;
-    }
+    public List<BursaAcordata> getBurseAcordate() { return burseAcordate; }
+    public void setBurseAcordate(List<BursaAcordata> burseAcordate) { this.burseAcordate = burseAcordate; }
 
     public void adaugaBursaAcordata(BursaAcordata bursaAcordata) {
-        if (this.burseAcordate == null) {
-            this.burseAcordate = new ArrayList<>();
+        if (bursaAcordata != null) {
+            burseAcordate.add(bursaAcordata);
+            bursaAcordata.setStudent(this);
         }
-        this.burseAcordate.add(bursaAcordata);
     }
 
     public String getNumeComplet() {
@@ -170,4 +137,3 @@ public class Student {
                 '}';
     }
 }
-

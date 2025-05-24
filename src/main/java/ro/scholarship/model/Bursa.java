@@ -1,85 +1,67 @@
 package ro.scholarship.model;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "burse")
 public class Bursa {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "burse_seq_gen")
+    @SequenceGenerator(name = "burse_seq_gen", sequenceName = "burse_seq", allocationSize = 1)
     private int id;
+
+    @Column(nullable = false)
     private String denumire;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tip_bursa", nullable = false)
     private TipBursa tip;
+
+    @Column(nullable = false)
     private float valoare;
+
+    @ManyToOne
+    @JoinColumn(name = "semestru_id")
     private SemestruUniversitar semestru;
-    private List<Criteriu> criteriiEligibilitate;
+
+    @OneToMany(mappedBy = "bursa", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Criteriu> criteriiEligibilitate = new ArrayList<>();
+
+    @Column(name = "numar_burse_disponibile")
     private int numarBurseDisponibile;
 
-    public Bursa() {
-        this.criteriiEligibilitate = new ArrayList<>();
-    }
+    public Bursa() {}
 
     public Bursa(String denumire, TipBursa tip, float valoare, int numarBurseDisponibile) {
-        this();
         this.denumire = denumire;
         this.tip = tip;
         this.valoare = valoare;
         this.numarBurseDisponibile = numarBurseDisponibile;
     }
 
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getDenumire() { return denumire; }
+    public void setDenumire(String denumire) { this.denumire = denumire; }
 
-    public String getDenumire() {
-        return denumire;
-    }
+    public TipBursa getTip() { return tip; }
+    public void setTip(TipBursa tip) { this.tip = tip; }
 
-    public void setDenumire(String denumire) {
-        this.denumire = denumire;
-    }
+    public float getValoare() { return valoare; }
+    public void setValoare(float valoare) { this.valoare = valoare; }
 
-    public TipBursa getTip() {
-        return tip;
-    }
+    public SemestruUniversitar getSemestru() { return semestru; }
+    public void setSemestru(SemestruUniversitar semestru) { this.semestru = semestru; }
 
-    public void setTip(TipBursa tip) {
-        this.tip = tip;
-    }
+    public List<Criteriu> getCriteriiEligibilitate() { return criteriiEligibilitate; }
+    public void setCriteriiEligibilitate(List<Criteriu> criteriiEligibilitate) { this.criteriiEligibilitate = criteriiEligibilitate; }
 
-    public float getValoare() {
-        return valoare;
-    }
-
-    public void setValoare(float valoare) {
-        this.valoare = valoare;
-    }
-
-    public SemestruUniversitar getSemestru() {
-        return semestru;
-    }
-
-    public void setSemestru(SemestruUniversitar semestru) {
-        this.semestru = semestru;
-    }
-
-    public List<Criteriu> getCriteriiEligibilitate() {
-        return criteriiEligibilitate;
-    }
-
-    public void setCriteriiEligibilitate(List<Criteriu> criteriiEligibilitate) {
-        this.criteriiEligibilitate = criteriiEligibilitate;
-    }
-
-    public int getNumarBurseDisponibile() {
-        return numarBurseDisponibile;
-    }
-
-    public void setNumarBurseDisponibile(int numarBurseDisponibile) {
-        this.numarBurseDisponibile = numarBurseDisponibile;
-    }
+    public int getNumarBurseDisponibile() { return numarBurseDisponibile; }
+    public void setNumarBurseDisponibile(int numarBurseDisponibile) { this.numarBurseDisponibile = numarBurseDisponibile; }
 
     @Override
     public boolean equals(Object o) {

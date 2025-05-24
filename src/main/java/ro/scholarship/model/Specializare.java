@@ -1,11 +1,24 @@
 package ro.scholarship.model;
 
+import jakarta.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "specializari")
 public class Specializare {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "specializari_seq_gen")
+    @SequenceGenerator(name = "specializari_seq_gen", sequenceName = "specializari_seq", allocationSize = 1)
     private int id;
+
+    @Column(nullable = false)
     private String denumire;
+
+    @ManyToOne
+    @JoinColumn(name = "facultate_id")
     private Facultate facultate;
+
+    @Column(name = "numar_locuri_burse")
     private int numarLocuriBurse;
 
     public Specializare() {

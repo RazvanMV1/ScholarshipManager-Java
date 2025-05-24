@@ -1,13 +1,22 @@
 package ro.scholarship.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "criterii_medie")
 public class CriteriuMedie extends Criteriu {
+
+    @Column(name = "medie_minima")
     private float medieMinimaAcceptata;
 
-    public CriteriuMedie() {}
+    public CriteriuMedie() {
+        setTipCriteriu("MEDIE");
+    }
 
     public CriteriuMedie(int id, String denumire, float pondere, float medieMinimaAcceptata) {
         super(id, denumire, pondere);
         this.medieMinimaAcceptata = medieMinimaAcceptata;
+        setTipCriteriu("MEDIE");
     }
 
     public float getMedieMinimaAcceptata() {

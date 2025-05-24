@@ -1,14 +1,32 @@
 package ro.scholarship.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
+@Table(name = "burse_acordate")
 public class BursaAcordata {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "burse_acordate_seq_gen")
+    @SequenceGenerator(name = "burse_acordate_seq_gen", sequenceName = "burse_acordate_seq", allocationSize = 1)
     private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id")
     private Student student;
+
+    @ManyToOne
+    @JoinColumn(name = "bursa_id")
     private Bursa bursa;
+
+    @Column(name = "data_acordare")
     private LocalDate dataAcordare;
-    private boolean esteActiva;
+
+    @Column(name = "este_activa")
+    private int esteActiva; // 1 = true, 0 = false
+
+    @Column(name = "punctaj_total")
     private float punctajTotal;
 
     public BursaAcordata() {}
@@ -17,57 +35,29 @@ public class BursaAcordata {
         this.student = student;
         this.bursa = bursa;
         this.dataAcordare = dataAcordare;
-        this.esteActiva = esteActiva;
+        setEsteActiva(esteActiva);
         this.punctajTotal = punctajTotal;
     }
 
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public Student getStudent() { return student; }
+    public void setStudent(Student student) { this.student = student; }
 
-    public Student getStudent() {
-        return student;
-    }
+    public Bursa getBursa() { return bursa; }
+    public void setBursa(Bursa bursa) { this.bursa = bursa; }
 
-    public void setStudent(Student student) {
-        this.student = student;
-    }
+    public LocalDate getDataAcordare() { return dataAcordare; }
+    public void setDataAcordare(LocalDate dataAcordare) { this.dataAcordare = dataAcordare; }
 
-    public Object getBursa() {
-        return bursa;
-    }
+    public float getPunctajTotal() { return punctajTotal; }
+    public void setPunctajTotal(float punctajTotal) { this.punctajTotal = punctajTotal; }
 
-    public void setBursa(Bursa bursa) {
-        this.bursa = bursa;
-    }
-
-    public LocalDate getDataAcordare() {
-        return dataAcordare;
-    }
-
-    public void setDataAcordare(LocalDate dataAcordare) {
-        this.dataAcordare = dataAcordare;
-    }
-
-    public boolean isEsteActiva() {
-        return esteActiva;
-    }
-
-    public void setEsteActiva(boolean esteActiva) {
-        this.esteActiva = esteActiva;
-    }
-
-    public float getPunctajTotal() {
-        return punctajTotal;
-    }
-
-    public void setPunctajTotal(float punctajTotal) {
-        this.punctajTotal = punctajTotal;
-    }
+    public int getEsteActiva() { return esteActiva; }
+    public void setEsteActiva(int esteActiva) { this.esteActiva = esteActiva; }
+    public boolean isEsteActiva() { return esteActiva == 1; }
+    public void setEsteActiva(boolean esteActiva) { this.esteActiva = esteActiva ? 1 : 0; }
 
     @Override
     public boolean equals(Object o) {

@@ -1,13 +1,22 @@
 package ro.scholarship.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "criterii_sociale")
 public class CriteriuSocial extends Criteriu {
+
+    @Column(name = "venit_maxim")
     private float venitMaximAcceptat;
 
-    public CriteriuSocial() {}
+    public CriteriuSocial() {
+        setTipCriteriu("SOCIAL");
+    }
 
     public CriteriuSocial(int id, String denumire, float pondere, float venitMaximAcceptat) {
         super(id, denumire, pondere);
         this.venitMaximAcceptat = venitMaximAcceptat;
+        setTipCriteriu("SOCIAL");
     }
 
     public float getVenitMaximAcceptat() {
@@ -20,10 +29,9 @@ public class CriteriuSocial extends Criteriu {
 
     @Override
     public float evalueaza(Student student) {
-        //Pentru exemplu, presupunem ca metoda getVenitFamilie() exista și returneaza venitul lunar pe membru.
-        // Daca nu exista, returnezi 0.
+        // Exemplu: dacă Student are getVenitFamilie() - altfel lasă 0.
         // return student.getVenitFamilie() <= venitMaximAcceptat ? getPondere() : 0;
-        return 0; // Placeholder
+        return 0;
     }
 
     @Override
@@ -34,4 +42,3 @@ public class CriteriuSocial extends Criteriu {
                 '}';
     }
 }
-

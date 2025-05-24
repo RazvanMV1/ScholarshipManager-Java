@@ -1,3 +1,14 @@
+DROP TABLE burse_acordate CASCADE CONSTRAINTS;
+DROP TABLE criterii_medie CASCADE CONSTRAINTS;
+DROP TABLE criterii_sociale CASCADE CONSTRAINTS;
+DROP TABLE criterii CASCADE CONSTRAINTS;
+DROP TABLE burse CASCADE CONSTRAINTS;
+DROP TABLE studenti CASCADE CONSTRAINTS;
+DROP TABLE specializari CASCADE CONSTRAINTS;
+DROP TABLE facultati CASCADE CONSTRAINTS;
+DROP TABLE semestre_universitare CASCADE CONSTRAINTS;
+/
+
 CREATE TABLE facultati (
     id NUMBER PRIMARY KEY,
     denumire VARCHAR2(100) NOT NULL,
@@ -131,18 +142,16 @@ END;
 
 -- Exemplu: criteriu medie
 CREATE TABLE criterii_medie (
-    criteriu_id NUMBER PRIMARY KEY,
+    id NUMBER PRIMARY KEY,
     medie_minima NUMBER(4,2) NOT NULL,
-    CONSTRAINT fk_criterii_medie_criteriu
-        FOREIGN KEY (criteriu_id) REFERENCES criterii(id)
+    CONSTRAINT fk_criterii_medie_criteriu FOREIGN KEY (id) REFERENCES criterii(id)
 );
 
 -- Exemplu: criteriu social
 CREATE TABLE criterii_sociale (
-    criteriu_id NUMBER PRIMARY KEY,
+    id NUMBER PRIMARY KEY,
     venit_maxim NUMBER(10,2) NOT NULL,
-    CONSTRAINT fk_criterii_sociale_criteriu
-        FOREIGN KEY (criteriu_id) REFERENCES criterii(id)
+    CONSTRAINT fk_criterii_sociale_criteriu FOREIGN KEY (id) REFERENCES criterii(id)
 );
 
 CREATE TABLE burse_acordate (
