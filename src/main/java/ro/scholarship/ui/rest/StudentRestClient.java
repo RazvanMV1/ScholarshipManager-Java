@@ -1,0 +1,35 @@
+package ro.scholarship.ui.rest;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ro.scholarship.model.Student;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.List;
+
+public class StudentRestClient {
+    private static final String BASE_URL = "http://localhost:8081/api/students";
+    private static final HttpClient client = HttpClient.newHttpClient();
+    private static final ObjectMapper mapper = new ObjectMapper();
+
+    public static List<Student> loadAllStudents() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(BASE_URL))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return mapper.readValue(response.body(), new TypeReference<List<Student>>() {});
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
+
+    // Poți adăuga aici și metode pentru POST/PUT/DELETE...
+}
