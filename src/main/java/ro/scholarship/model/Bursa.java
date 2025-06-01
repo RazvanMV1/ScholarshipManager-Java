@@ -28,7 +28,9 @@ public class Bursa {
     private SemestruUniversitar semestru;
 
     @OneToMany(mappedBy = "bursa", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Criteriu> criteriiEligibilitate = new ArrayList<>();
+
 
     @Column(name = "numar_burse_disponibile")
     private int numarBurseDisponibile;

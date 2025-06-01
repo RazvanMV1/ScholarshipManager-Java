@@ -39,6 +39,7 @@ public class Student {
     private int areRestante; // 0 = nu, 1 = da (mapare pentru Oracle)
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<BursaAcordata> burseAcordate = new ArrayList<>();
 
     public Student() {}

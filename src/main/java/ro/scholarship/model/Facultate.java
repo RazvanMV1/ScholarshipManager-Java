@@ -1,5 +1,6 @@
 package ro.scholarship.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class Facultate {
             orphanRemoval = true,
             fetch = FetchType.LAZY
     )
+    @JsonIgnore
     private List<Specializare> specializari = new ArrayList<>();
 
     @Column(name = "buget_burse")

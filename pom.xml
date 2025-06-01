@@ -42,6 +42,13 @@
             <version>23.2.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.19.0</version>
+        </dependency>
+
+
         <!-- JavaFX (doar dacă ai și frontend desktop în același proiect) -->
         <dependency>
             <groupId>org.openjfx</groupId>

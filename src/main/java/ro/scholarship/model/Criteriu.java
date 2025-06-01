@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "criterii")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Criteriu {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "criterii_seq_gen")
     @SequenceGenerator(name = "criterii_seq_gen", sequenceName = "criterii_seq", allocationSize = 1)
@@ -32,45 +33,21 @@ public abstract class Criteriu {
         this.pondere = pondere;
     }
 
-    public String getTipCriteriu() {
-        return tipCriteriu;
-    }
+    // Getters și Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setTipCriteriu(String tipCriteriu) {
-        this.tipCriteriu = tipCriteriu;
-    }
+    public String getDenumire() { return denumire; }
+    public void setDenumire(String denumire) { this.denumire = denumire; }
 
-    public int getId() {
-        return id;
-    }
+    public float getPondere() { return pondere; }
+    public void setPondere(float pondere) { this.pondere = pondere; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getTipCriteriu() { return tipCriteriu; }
+    public void setTipCriteriu(String tipCriteriu) { this.tipCriteriu = tipCriteriu; }
 
-    public String getDenumire() {
-        return denumire;
-    }
-
-    public void setDenumire(String denumire) {
-        this.denumire = denumire;
-    }
-
-    public float getPondere() {
-        return pondere;
-    }
-
-    public void setPondere(float pondere) {
-        this.pondere = pondere;
-    }
-
-    public Bursa getBursa() {
-        return bursa;
-    }
-
-    public void setBursa(Bursa bursa) {
-        this.bursa = bursa;
-    }
+    public Bursa getBursa() { return bursa; }
+    public void setBursa(Bursa bursa) { this.bursa = bursa; }
 
     public abstract float evalueaza(Student student);
 
