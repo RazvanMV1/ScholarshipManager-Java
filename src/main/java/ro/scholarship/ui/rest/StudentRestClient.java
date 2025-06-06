@@ -2,12 +2,15 @@ package ro.scholarship.ui.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ro.scholarship.model.Facultate;
+import ro.scholarship.model.Specializare;
 import ro.scholarship.model.Student;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 import java.util.List;
 
 public class StudentRestClient {
@@ -30,6 +33,28 @@ public class StudentRestClient {
             return List.of();
         }
     }
+    public static void addStudent(Student student) {
+        try {
+            // Evită serializarea recursivă: păstrăm doar ID-ul specializării
+            if (student.getSpecializare() != null) {
+                student.getSpecializare().setFacultate(null); // elimină facultatea
+            }
 
-    // Poți adăuga aici și metode pentru POST/PUT/DELETE...
+            String json = mapper.writeValueAsString(student);
+            System.out.println("Trimitem JSON student: " + json); // DEBUG
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            throw new RuntimeException("Nu s-a putut adăuga studentul!", e);
+        }
+
+    }
+
+
 }

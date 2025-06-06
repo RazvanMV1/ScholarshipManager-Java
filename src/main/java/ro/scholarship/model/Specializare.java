@@ -1,10 +1,12 @@
 package ro.scholarship.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "specializari")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Specializare {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "specializari_seq_gen")
@@ -85,11 +87,7 @@ public class Specializare {
 
     @Override
     public String toString() {
-        return "Specializare{" +
-                "id=" + id +
-                ", denumire='" + denumire + '\'' +
-                ", facultate=" + (facultate != null ? facultate.getDenumire() : "nespecificat") +
-                ", numarLocuriBurse=" + numarLocuriBurse +
-                '}';
+        return denumire; // DOAR ASTA
     }
+
 }

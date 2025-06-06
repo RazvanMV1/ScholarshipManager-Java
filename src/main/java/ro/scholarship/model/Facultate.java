@@ -1,13 +1,16 @@
 package ro.scholarship.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "facultati")
+@Table(name = "FACULTATI")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Facultate {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "facultati_seq_gen")
@@ -93,6 +96,7 @@ public class Facultate {
         return false;
     }
 
+    @JsonProperty("numarTotalLocuriBurse") // <-- expune ca proprietate JSON
     public int getNumarTotalLocuriBurse() {
         return specializari.stream()
                 .mapToInt(Specializare::getNumarLocuriBurse)
@@ -114,11 +118,6 @@ public class Facultate {
 
     @Override
     public String toString() {
-        return "Facultate{" +
-                "id=" + id +
-                ", denumire='" + denumire + '\'' +
-                ", bugetBurse=" + bugetBurse +
-                ", nrSpecializari=" + (specializari != null ? specializari.size() : 0) +
-                '}';
+        return denumire;
     }
 }

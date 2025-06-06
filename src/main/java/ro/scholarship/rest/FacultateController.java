@@ -18,6 +18,19 @@ public class FacultateController {
     public List<Facultate> getAll() {
         return facultateRepository.findAll();
     }
+    @GetMapping("/ping")
+    public String ping() {
+        return "merge!";
+    }
+    @GetMapping("/debug")
+    public List<Facultate> debug() {
+        List<Facultate> list = facultateRepository.findAll();
+        System.out.println("Facultati din DB: " + list.size());
+        for (Facultate f : list) {
+            System.out.println(f);
+        }
+        return list;
+    }
 
     @GetMapping("/{id}")
     public Facultate getById(@PathVariable int id) {

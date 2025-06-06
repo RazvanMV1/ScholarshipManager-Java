@@ -1,13 +1,15 @@
 package ro.scholarship.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "studenti")
+@Table(name = "STUDENTI")
 public class Student {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "studenti_seq_gen")
     @SequenceGenerator(name = "studenti_seq_gen", sequenceName = "studenti_seq", allocationSize = 1)
@@ -36,10 +38,10 @@ public class Student {
     private float medieSemestruAnterior;
 
     @Column(name = "are_restante")
-    private int areRestante; // 0 = nu, 1 = da (mapare pentru Oracle)
+    private int areRestante; // 0 = nu, 1 = da (pentru Oracle)
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @JsonIgnore
     private List<BursaAcordata> burseAcordate = new ArrayList<>();
 
     public Student() {}
@@ -95,8 +97,11 @@ public class Student {
 
     public int getAreRestante() { return areRestante; }
     public void setAreRestante(int areRestante) { this.areRestante = areRestante; }
-    public boolean isAreRestante() { return areRestante == 1; }
-    public void setAreRestante(boolean areRestante) { this.areRestante = areRestante ? 1 : 0; }
+
+    @JsonIgnore // ✅ Nu permite conflict în timpul mapping-ului JSON
+    public boolean isAreRestante() {
+        return areRestante == 1;
+    }
 
     public List<BursaAcordata> getBurseAcordate() { return burseAcordate; }
     public void setBurseAcordate(List<BursaAcordata> burseAcordate) { this.burseAcordate = burseAcordate; }
@@ -115,8 +120,7 @@ public class Student {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Student student = (Student) o;
+        if (!(o instanceof Student student)) return false;
         return id == student.id || (cnp != null && cnp.equals(student.cnp));
     }
 
