@@ -21,7 +21,7 @@
             <property name="jakarta.persistence.jdbc.user" value="scholarship"/>
             <property name="jakarta.persistence.jdbc.password" value="parola123"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="none"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
         </properties>
