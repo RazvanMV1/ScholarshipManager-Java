@@ -55,6 +55,27 @@ public class StudentRestClient {
         }
 
     }
+    public static void updateStudent(Student student) {
+        try {
+            if (student.getSpecializare() != null) {
+                student.getSpecializare().setFacultate(null);
+            }
+
+            String json = mapper.writeValueAsString(student);
+            System.out.println("Trimitem UPDATE JSON student: " + json);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/" + student.getId()))
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            throw new RuntimeException("Nu s-a putut actualiza studentul!", e);
+        }
+    }
+
     public static void deleteStudent(int id) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
