@@ -271,7 +271,6 @@ public class StudentPane extends BorderPane {
         TextField fieldAn = new TextField(String.valueOf(selected.getAnStudiu()));
         TextField fieldMedie = new TextField(String.valueOf(selected.getMedieSemestruAnterior()));
 
-        // --- FILTRE pe text fields ca la adăugare ---
         fieldCNP.setTextFormatter(new TextFormatter<>(change ->
                 (change.getControlNewText().matches("\\d{0,13}")) ? change : null
         ));
@@ -285,17 +284,14 @@ public class StudentPane extends BorderPane {
                 (change.getControlNewText().matches("([0-9]{0,2}(\\.[0-9]{0,2})?)?")) ? change : null
         ));
 
-        // Facultăți și specializări
         List<Facultate> facultati = FacultateRestClient.loadAllFacultati();
         List<Specializare> specializari = SpecializareRestClient.loadAllSpecializari();
         ComboBox<Facultate> comboFacultate = new ComboBox<>(FXCollections.observableArrayList(facultati));
         ComboBox<Specializare> comboSpecializare = new ComboBox<>();
 
-        // Inițializare valori
         Facultate facultateInit = selected.getSpecializare().getFacultate();
         comboFacultate.setValue(facultateInit);
 
-        // Populatează specializările pentru facultatea inițială
         comboSpecializare.setItems(FXCollections.observableArrayList(
                 specializari.stream()
                         .filter(s -> s.getFacultate().getId() == facultateInit.getId())
@@ -303,7 +299,6 @@ public class StudentPane extends BorderPane {
         ));
         comboSpecializare.setValue(selected.getSpecializare());
 
-        // Update specializări dacă modifici facultatea
         comboFacultate.setOnAction(e -> {
             Facultate facult = comboFacultate.getValue();
             if (facult != null) {
@@ -319,7 +314,6 @@ public class StudentPane extends BorderPane {
             }
         });
 
-        // UI
         GridPane grid = new GridPane();
         grid.setHgap(10); grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
@@ -349,7 +343,6 @@ public class StudentPane extends BorderPane {
                     String anStr = fieldAn.getText().trim();
                     String medieStr = fieldMedie.getText().trim();
 
-                    // Validări
                     if (nume.isEmpty() || prenume.isEmpty() || cnp.isEmpty() || email.isEmpty() ||
                             telefon.isEmpty() || anStr.isEmpty() || medieStr.isEmpty())
                         throw new IllegalArgumentException("Toate câmpurile sunt obligatorii!");
@@ -375,7 +368,6 @@ public class StudentPane extends BorderPane {
                     if (selectedSpecializare == null)
                         throw new IllegalArgumentException("Alege specializarea!");
 
-                    // Setăm valorile modificate
                     selected.setNume(nume);
                     selected.setPrenume(prenume);
                     selected.setCnp(cnp);

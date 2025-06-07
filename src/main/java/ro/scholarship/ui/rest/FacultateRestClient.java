@@ -44,6 +44,21 @@ public class FacultateRestClient {
             return null;
         }
     }
+    public static void updateFacultate(Facultate facultate) {
+        try {
+            String json = mapper.writeValueAsString(facultate);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(BASE_URL + "/" + facultate.getId()))
+                    .PUT(HttpRequest.BodyPublishers.ofString(json))
+                    .header("Content-Type", "application/json")
+                    .build();
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Eroare la update facultate!", e);
+        }
+    }
+
 
     public static void deleteFacultate(int id) {
         try {
