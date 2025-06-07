@@ -63,9 +63,8 @@ public class SpecializarePane extends BorderPane {
             locuriDialog.showAndWait().ifPresent(locuriStr -> {
                 try {
                     int locuri = Integer.parseInt(locuriStr);
-                    // Pentru demo, asociem specializarea cu Facultate id=1
                     ro.scholarship.model.Facultate f = new ro.scholarship.model.Facultate();
-                    f.setId(1); // sau alege dintr-o listă dacă ai UI pentru asta
+                    f.setId(1);
                     Specializare spec = new Specializare(denumire, locuri);
                     spec.setFacultate(f);
                     Specializare saved = SpecializareRestClient.addSpecializare(spec);

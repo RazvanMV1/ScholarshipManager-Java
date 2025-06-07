@@ -39,8 +39,6 @@ public class Student {
     @Column(name = "medie_semestru_anterior")
     private float medieSemestruAnterior;
 
-    @Column(name = "are_restante")
-    private int areRestante; // 0 = nu, 1 = da (pentru Oracle)
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -57,7 +55,7 @@ public class Student {
 
     public Student(int id, String nume, String prenume, String cnp, String email,
                    String telefon, Specializare specializare, int anStudiu,
-                   float medieSemestruAnterior, boolean areRestante) {
+                   float medieSemestruAnterior) {
         this.id = id;
         this.nume = nume;
         this.prenume = prenume;
@@ -67,7 +65,6 @@ public class Student {
         this.specializare = specializare;
         this.anStudiu = anStudiu;
         this.medieSemestruAnterior = medieSemestruAnterior;
-        this.areRestante = areRestante ? 1 : 0;
     }
 
     public int getId() { return id; }
@@ -97,13 +94,6 @@ public class Student {
     public float getMedieSemestruAnterior() { return medieSemestruAnterior; }
     public void setMedieSemestruAnterior(float medieSemestruAnterior) { this.medieSemestruAnterior = medieSemestruAnterior; }
 
-    public int getAreRestante() { return areRestante; }
-    public void setAreRestante(int areRestante) { this.areRestante = areRestante; }
-
-    @JsonIgnore // ✅ Nu permite conflict în timpul mapping-ului JSON
-    public boolean isAreRestante() {
-        return areRestante == 1;
-    }
 
     public List<BursaAcordata> getBurseAcordate() { return burseAcordate; }
     public void setBurseAcordate(List<BursaAcordata> burseAcordate) { this.burseAcordate = burseAcordate; }
