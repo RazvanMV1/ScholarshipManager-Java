@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ro.scholarship.model.BursaAcordata;
 import ro.scholarship.model.Bursa;
 import ro.scholarship.model.Student;
-import ro.scholarship.repository.BursaAcordataRepository;
+import ro.scholarship.service.BursaAcordataService;
 
 import java.util.List;
 
@@ -14,45 +14,44 @@ import java.util.List;
 public class BursaAcordataController {
 
     @Autowired
-    private BursaAcordataRepository bursaAcordataRepository;
+    private BursaAcordataService bursaAcordataService;
 
     @GetMapping
     public List<BursaAcordata> getAll() {
-        return bursaAcordataRepository.findAll();
+        return bursaAcordataService.findAll();
     }
 
     @GetMapping("/{id}")
     public BursaAcordata getById(@PathVariable int id) {
-        return bursaAcordataRepository.findById(id).orElse(null);
+        return bursaAcordataService.findById(id).orElse(null);
     }
 
     @PostMapping
     public BursaAcordata add(@RequestBody BursaAcordata ba) {
-        return bursaAcordataRepository.save(ba);
+        return bursaAcordataService.save(ba);
     }
 
     @PutMapping("/{id}")
     public BursaAcordata update(@PathVariable int id, @RequestBody BursaAcordata ba) {
-        ba.setId(id);
-        return bursaAcordataRepository.save(ba);
+        return bursaAcordataService.update(id, ba);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
-        bursaAcordataRepository.deleteById(id);
+        bursaAcordataService.delete(id);
     }
 
     @GetMapping("/student/{studentId}")
     public List<BursaAcordata> getByStudent(@PathVariable int studentId) {
         Student student = new Student();
         student.setId(studentId);
-        return bursaAcordataRepository.findByStudent(student);
+        return bursaAcordataService.findByStudent(student);
     }
 
     @GetMapping("/bursa/{bursaId}")
     public List<BursaAcordata> getByBursa(@PathVariable int bursaId) {
         Bursa bursa = new Bursa();
         bursa.setId(bursaId);
-        return bursaAcordataRepository.findByBursa(bursa);
+        return bursaAcordataService.findByBursa(bursa);
     }
 }

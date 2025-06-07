@@ -3,7 +3,7 @@ package ro.scholarship.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ro.scholarship.model.Specializare;
-import ro.scholarship.repository.SpecializareRepository;
+import ro.scholarship.service.SpecializareService;
 
 import java.util.List;
 
@@ -12,31 +12,30 @@ import java.util.List;
 public class SpecializareController {
 
     @Autowired
-    private SpecializareRepository specializareRepository;
+    private SpecializareService specializareService;
 
     @GetMapping
     public List<Specializare> getAll() {
-        return specializareRepository.findAll();
+        return specializareService.findAll();
     }
 
     @GetMapping("/{id}")
     public Specializare getById(@PathVariable int id) {
-        return specializareRepository.findById(id).orElse(null);
+        return specializareService.findById(id).orElse(null);
     }
 
     @PostMapping
     public Specializare add(@RequestBody Specializare s) {
-        return specializareRepository.save(s);
+        return specializareService.save(s);
     }
 
     @PutMapping("/{id}")
     public Specializare update(@PathVariable int id, @RequestBody Specializare s) {
-        s.setId(id);
-        return specializareRepository.save(s);
+        return specializareService.update(id, s);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
-        specializareRepository.deleteById(id);
+        specializareService.delete(id);
     }
 }

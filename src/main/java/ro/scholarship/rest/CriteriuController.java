@@ -3,8 +3,7 @@ package ro.scholarship.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ro.scholarship.model.Criteriu;
-import ro.scholarship.model.Bursa;
-import ro.scholarship.repository.CriteriuRepository;
+import ro.scholarship.service.CriteriuService;
 
 import java.util.List;
 
@@ -13,38 +12,35 @@ import java.util.List;
 public class CriteriuController {
 
     @Autowired
-    private CriteriuRepository criteriuRepository;
+    private CriteriuService criteriuService;
 
     @GetMapping
     public List<Criteriu> getAll() {
-        return criteriuRepository.findAll();
+        return criteriuService.findAll();
     }
 
     @GetMapping("/{id}")
     public Criteriu getById(@PathVariable int id) {
-        return criteriuRepository.findById(id).orElse(null);
+        return criteriuService.findById(id).orElse(null);
     }
 
     @PostMapping
     public Criteriu add(@RequestBody Criteriu criteriu) {
-        return criteriuRepository.save(criteriu);
+        return criteriuService.save(criteriu);
     }
 
     @PutMapping("/{id}")
     public Criteriu update(@PathVariable int id, @RequestBody Criteriu criteriu) {
-        criteriu.setId(id);
-        return criteriuRepository.save(criteriu);
+        return criteriuService.update(id, criteriu);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
-        criteriuRepository.deleteById(id);
+        criteriuService.delete(id);
     }
 
     @GetMapping("/bursa/{bursaId}")
     public List<Criteriu> getByBursa(@PathVariable int bursaId) {
-        Bursa bursa = new Bursa();
-        bursa.setId(bursaId);
-        return criteriuRepository.findByBursa(bursa);
+        return criteriuService.findByBursa(bursaId);
     }
 }

@@ -3,8 +3,8 @@ package ro.scholarship.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ro.scholarship.model.CriteriuSocial;
-import ro.scholarship.repository.CriteriuSocialRepository;
 import ro.scholarship.model.Bursa;
+import ro.scholarship.service.CriteriuSocialService;
 
 import java.util.List;
 
@@ -13,38 +13,37 @@ import java.util.List;
 public class CriteriuSocialController {
 
     @Autowired
-    private CriteriuSocialRepository criteriuSocialRepository;
+    private CriteriuSocialService criteriuSocialService;
 
     @GetMapping
     public List<CriteriuSocial> getAll() {
-        return criteriuSocialRepository.findAll();
+        return criteriuSocialService.findAll();
     }
 
     @GetMapping("/{id}")
     public CriteriuSocial getById(@PathVariable int id) {
-        return criteriuSocialRepository.findById(id).orElse(null);
+        return criteriuSocialService.findById(id).orElse(null);
     }
 
     @PostMapping
     public CriteriuSocial add(@RequestBody CriteriuSocial criteriuSocial) {
-        return criteriuSocialRepository.save(criteriuSocial);
+        return criteriuSocialService.save(criteriuSocial);
     }
 
     @PutMapping("/{id}")
     public CriteriuSocial update(@PathVariable int id, @RequestBody CriteriuSocial criteriuSocial) {
-        criteriuSocial.setId(id);
-        return criteriuSocialRepository.save(criteriuSocial);
+        return criteriuSocialService.update(id, criteriuSocial);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
-        criteriuSocialRepository.deleteById(id);
+        criteriuSocialService.delete(id);
     }
 
     @GetMapping("/bursa/{bursaId}")
     public List<CriteriuSocial> getByBursa(@PathVariable int bursaId) {
         Bursa bursa = new Bursa();
         bursa.setId(bursaId);
-        return criteriuSocialRepository.findByBursa(bursa);
+        return criteriuSocialService.findByBursa(bursa);
     }
 }

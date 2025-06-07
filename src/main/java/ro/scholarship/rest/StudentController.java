@@ -3,7 +3,7 @@ package ro.scholarship.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ro.scholarship.model.Student;
-import ro.scholarship.repository.StudentRepository;
+import ro.scholarship.service.StudentService;
 
 import java.util.List;
 
@@ -12,31 +12,30 @@ import java.util.List;
 public class StudentController {
 
     @Autowired
-    private StudentRepository studentRepository;
+    private StudentService studentService;
 
     @GetMapping
     public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+        return studentService.findAll();
     }
 
     @GetMapping("/{id}")
     public Student getStudentById(@PathVariable int id) {
-        return studentRepository.findById(id).orElse(null);
+        return studentService.findById(id).orElse(null);
     }
 
     @PostMapping
     public Student addStudent(@RequestBody Student student) {
-        return studentRepository.save(student);
+        return studentService.save(student);
     }
 
     @PutMapping("/{id}")
     public Student updateStudent(@PathVariable int id, @RequestBody Student student) {
-        student.setId(id);
-        return studentRepository.save(student);
+        return studentService.update(id, student);
     }
 
     @DeleteMapping("/{id}")
     public void deleteStudent(@PathVariable int id) {
-        studentRepository.deleteById(id);
+        studentService.delete(id);
     }
 }

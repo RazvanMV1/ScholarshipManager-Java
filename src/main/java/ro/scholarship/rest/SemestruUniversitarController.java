@@ -3,7 +3,7 @@ package ro.scholarship.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ro.scholarship.model.SemestruUniversitar;
-import ro.scholarship.repository.SemestruUniversitarRepository;
+import ro.scholarship.service.SemestruUniversitarService;
 
 import java.util.List;
 
@@ -12,36 +12,35 @@ import java.util.List;
 public class SemestruUniversitarController {
 
     @Autowired
-    private SemestruUniversitarRepository semestruRepo;
+    private SemestruUniversitarService semestruService;
 
     @GetMapping
     public List<SemestruUniversitar> getAll() {
-        return semestruRepo.findAll();
+        return semestruService.findAll();
     }
 
     @GetMapping("/{id}")
     public SemestruUniversitar getById(@PathVariable int id) {
-        return semestruRepo.findById(id).orElse(null);
+        return semestruService.findById(id).orElse(null);
     }
 
     @PostMapping
     public SemestruUniversitar add(@RequestBody SemestruUniversitar sem) {
-        return semestruRepo.save(sem);
+        return semestruService.save(sem);
     }
 
     @PutMapping("/{id}")
     public SemestruUniversitar update(@PathVariable int id, @RequestBody SemestruUniversitar sem) {
-        sem.setId(id);
-        return semestruRepo.save(sem);
+        return semestruService.update(id, sem);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
-        semestruRepo.deleteById(id);
+        semestruService.delete(id);
     }
 
     @GetMapping("/an/{anUniversitar}")
     public List<SemestruUniversitar> getByAnUniversitar(@PathVariable int anUniversitar) {
-        return semestruRepo.findByAnUniversitar(anUniversitar);
+        return semestruService.findByAnUniversitar(anUniversitar);
     }
 }
