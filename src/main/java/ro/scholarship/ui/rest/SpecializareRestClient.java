@@ -1,3 +1,4 @@
+
 package ro.scholarship.ui.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -45,6 +46,22 @@ public class SpecializareRestClient {
             return null;
         }
     }
+
+    public static void updateSpecializare(Specializare specializare) {
+        try {
+            String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(specializare);
+            java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                    .uri(new java.net.URI(BASE_URL+"/" + specializare.getId()))
+                    .PUT(java.net.http.HttpRequest.BodyPublishers.ofString(json))
+                    .header("Content-Type", "application/json")
+                    .build();
+            java.net.http.HttpClient.newHttpClient().send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Eroare la update specializare!", e);
+        }
+    }
+
 
     public static void deleteSpecializare(int id) {
         try {
