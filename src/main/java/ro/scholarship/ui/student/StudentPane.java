@@ -1,5 +1,8 @@
 package ro.scholarship.ui.student;
 
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -23,21 +26,46 @@ public class StudentPane extends BorderPane {
 
     public StudentPane() {
         table = new TableView<>();
-
-        // Coloane
+// Coloane existente
         TableColumn<Student, String> colNume = new TableColumn<>("Nume");
-        colNume.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getNume()));
+        colNume.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNume()));
 
         TableColumn<Student, String> colPrenume = new TableColumn<>("Prenume");
-        colPrenume.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getPrenume()));
+        colPrenume.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPrenume()));
 
         TableColumn<Student, String> colCnp = new TableColumn<>("CNP");
-        colCnp.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getCnp()));
+        colCnp.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCnp()));
 
         TableColumn<Student, Integer> colAn = new TableColumn<>("An");
-        colAn.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getAnStudiu()).asObject());
+        colAn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getAnStudiu()).asObject());
 
-        table.getColumns().addAll(colNume, colPrenume, colCnp, colAn);
+// NOU: Email
+        TableColumn<Student, String> colEmail = new TableColumn<>("Email");
+        colEmail.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmail()));
+
+// NOU: Telefon
+        TableColumn<Student, String> colTelefon = new TableColumn<>("Telefon");
+        colTelefon.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTelefon()));
+
+// NOU: Specializare (doar denumirea)
+        TableColumn<Student, String> colSpecializare = new TableColumn<>("Specializare");
+        colSpecializare.setCellValueFactory(data -> new SimpleStringProperty(
+                data.getValue().getSpecializare() != null ? data.getValue().getSpecializare().getDenumire() : "")
+        );
+
+// NOU: Medie semestru anterior
+        TableColumn<Student, Float> colMedie = new TableColumn<>("Medie sem. anterior");
+        colMedie.setCellValueFactory(data -> new SimpleFloatProperty(data.getValue().getMedieSemestruAnterior()).asObject());
+
+// NOU: Are Restanțe (afiseaza Da/Nu)
+        TableColumn<Student, String> colRestante = new TableColumn<>("Restanțe");
+        colRestante.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().isAreRestante() ? "Da" : "Nu"));
+
+// Adaugă toate coloanele la tabel (în ordinea dorită)
+        table.getColumns().setAll(
+                colNume, colPrenume, colCnp, colAn, colEmail, colTelefon, colSpecializare, colMedie, colRestante
+        );
+
 
         studentList = FXCollections.observableArrayList();
         table.setItems(studentList);

@@ -26,6 +26,7 @@ public class StudentRestClient {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("Răspuns JSON studenți: " + response.body());  // <-- Asta adaug-o
 
             return mapper.readValue(response.body(), new TypeReference<List<Student>>() {});
         } catch (Exception e) {
