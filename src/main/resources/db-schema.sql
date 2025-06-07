@@ -58,6 +58,7 @@ CREATE TABLE studenti (
     specializare_id NUMBER,
     an_studiu NUMBER NOT NULL,
     medie_semestru_anterior NUMBER(4,2),
+    venit_lunar NUMBER(8,2),
     CONSTRAINT fk_studenti_specializare
         FOREIGN KEY (specializare_id) REFERENCES specializari(id)
 );

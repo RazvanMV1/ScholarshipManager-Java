@@ -1,5 +1,6 @@
 package ro.scholarship.ui.student;
 
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -53,10 +54,17 @@ public class StudentPane extends BorderPane {
         TableColumn<Student, Float> colMedie = new TableColumn<>("Medie sem. anterior");
         colMedie.setCellValueFactory(data -> new SimpleFloatProperty(data.getValue().getMedieSemestruAnterior()).asObject());
 
-        table.getColumns().setAll(
-                colNume, colPrenume, colCnp, colAn, colEmail, colTelefon, colSpecializare, colMedie
+        TableColumn<Student, Double> colVenitLunar = new TableColumn<>("Venit lunar");
+        colVenitLunar.setCellValueFactory(data ->
+                new SimpleDoubleProperty(
+                        data.getValue().getVenitLunar() == null ? 0 : data.getValue().getVenitLunar()
+                ).asObject()
         );
 
+
+        table.getColumns().setAll(
+                colNume, colPrenume, colCnp, colAn, colEmail, colTelefon, colSpecializare, colMedie, colVenitLunar
+        );
 
         studentList = FXCollections.observableArrayList();
         table.setItems(studentList);
@@ -92,6 +100,7 @@ public class StudentPane extends BorderPane {
         TextField fieldTelefon = new TextField();
         TextField fieldAn = new TextField();
         TextField fieldMedie = new TextField();
+        TextField fieldVenit = new TextField();
 
         fieldCNP.setTextFormatter(new TextFormatter<>(change ->
                 (change.getControlNewText().matches("\\d{0,13}")) ? change : null
@@ -104,6 +113,9 @@ public class StudentPane extends BorderPane {
         ));
         fieldMedie.setTextFormatter(new TextFormatter<>(change ->
                 (change.getControlNewText().matches("([0-9]{0,2}(\\.[0-9]{0,2})?)?")) ? change : null
+        ));
+        fieldVenit.setTextFormatter(new TextFormatter<>(change ->
+                (change.getControlNewText().matches("([0-9]{0,8}(\\.[0-9]{0,2})?)?")) ? change : null
         ));
 
         ComboBox<Facultate> comboFacultate = new ComboBox<>();
@@ -167,6 +179,7 @@ public class StudentPane extends BorderPane {
         grid.add(new Label("Telefon:"), 0, 4);      grid.add(fieldTelefon, 1, 4);
         grid.add(new Label("An studiu:"), 0, 5);    grid.add(fieldAn, 1, 5);
         grid.add(new Label("Medie semestru anterior:"), 0, 6); grid.add(fieldMedie, 1, 6);
+        grid.add(new Label("Venit lunar:"), 0, 7); grid.add(fieldVenit, 1, 7);
         grid.add(new Label("Facultate:"), 0, 8);    grid.add(comboFacultate, 1, 8);
         grid.add(new Label("Specializare:"), 0, 9); grid.add(comboSpecializare, 1, 9);
 
@@ -192,9 +205,10 @@ public class StudentPane extends BorderPane {
                     String telefon = fieldTelefon.getText().trim();
                     String anStr = fieldAn.getText().trim();
                     String medieStr = fieldMedie.getText().trim();
+                    String venitStr = fieldVenit.getText().trim();
 
                     if (nume.isEmpty() || prenume.isEmpty() || cnp.isEmpty() || email.isEmpty() ||
-                            telefon.isEmpty() || anStr.isEmpty() || medieStr.isEmpty())
+                            telefon.isEmpty() || anStr.isEmpty() || medieStr.isEmpty() || venitStr.isEmpty())
                         throw new IllegalArgumentException("Toate câmpurile sunt obligatorii!");
 
                     if (!cnp.matches("\\d{13}"))
@@ -214,6 +228,9 @@ public class StudentPane extends BorderPane {
                     if (medie < 1.0f || medie > 10.0f)
                         throw new IllegalArgumentException("Media trebuie să fie între 1.0 și 10.0!");
 
+                    Double venit = Double.parseDouble(venitStr);
+                    if (venit < 0) throw new IllegalArgumentException("Venitul trebuie să fie pozitiv!");
+
                     Specializare selectedSpecializare = comboSpecializare.getValue();
                     if (selectedSpecializare == null)
                         throw new IllegalArgumentException("Alege specializarea!");
@@ -227,7 +244,8 @@ public class StudentPane extends BorderPane {
                             telefon,
                             selectedSpecializare,
                             an,
-                            medie
+                            medie,
+                            venit
                     );
                 } catch (Exception e) {
                     Alert err = new Alert(Alert.AlertType.ERROR, "Date incorecte: " + e.getMessage());
@@ -270,6 +288,7 @@ public class StudentPane extends BorderPane {
         TextField fieldTelefon = new TextField(selected.getTelefon());
         TextField fieldAn = new TextField(String.valueOf(selected.getAnStudiu()));
         TextField fieldMedie = new TextField(String.valueOf(selected.getMedieSemestruAnterior()));
+        TextField fieldVenit = new TextField(selected.getVenitLunar() == null ? "" : selected.getVenitLunar().toString());
 
         fieldCNP.setTextFormatter(new TextFormatter<>(change ->
                 (change.getControlNewText().matches("\\d{0,13}")) ? change : null
@@ -282,6 +301,9 @@ public class StudentPane extends BorderPane {
         ));
         fieldMedie.setTextFormatter(new TextFormatter<>(change ->
                 (change.getControlNewText().matches("([0-9]{0,2}(\\.[0-9]{0,2})?)?")) ? change : null
+        ));
+        fieldVenit.setTextFormatter(new TextFormatter<>(change ->
+                (change.getControlNewText().matches("([0-9]{0,8}(\\.[0-9]{0,2})?)?")) ? change : null
         ));
 
         List<Facultate> facultati = FacultateRestClient.loadAllFacultati();
@@ -324,6 +346,7 @@ public class StudentPane extends BorderPane {
         grid.add(new Label("Telefon:"), 0, 4); grid.add(fieldTelefon, 1, 4);
         grid.add(new Label("An studiu:"), 0, 5); grid.add(fieldAn, 1, 5);
         grid.add(new Label("Medie semestru anterior:"), 0, 6); grid.add(fieldMedie, 1, 6);
+        grid.add(new Label("Venit lunar:"), 0, 7); grid.add(fieldVenit, 1, 7);
         grid.add(new Label("Facultate:"), 0, 8); grid.add(comboFacultate, 1, 8);
         grid.add(new Label("Specializare:"), 0, 9); grid.add(comboSpecializare, 1, 9);
 
@@ -342,9 +365,10 @@ public class StudentPane extends BorderPane {
                     String telefon = fieldTelefon.getText().trim();
                     String anStr = fieldAn.getText().trim();
                     String medieStr = fieldMedie.getText().trim();
+                    String venitStr = fieldVenit.getText().trim();
 
                     if (nume.isEmpty() || prenume.isEmpty() || cnp.isEmpty() || email.isEmpty() ||
-                            telefon.isEmpty() || anStr.isEmpty() || medieStr.isEmpty())
+                            telefon.isEmpty() || anStr.isEmpty() || medieStr.isEmpty() || venitStr.isEmpty())
                         throw new IllegalArgumentException("Toate câmpurile sunt obligatorii!");
 
                     if (!cnp.matches("\\d{13}"))
@@ -364,6 +388,9 @@ public class StudentPane extends BorderPane {
                     if (medie < 1.0f || medie > 10.0f)
                         throw new IllegalArgumentException("Media trebuie să fie între 1.0 și 10.0!");
 
+                    Double venit = Double.parseDouble(venitStr);
+                    if (venit < 0) throw new IllegalArgumentException("Venitul trebuie să fie pozitiv!");
+
                     Specializare selectedSpecializare = comboSpecializare.getValue();
                     if (selectedSpecializare == null)
                         throw new IllegalArgumentException("Alege specializarea!");
@@ -376,6 +403,7 @@ public class StudentPane extends BorderPane {
                     selected.setAnStudiu(an);
                     selected.setMedieSemestruAnterior(medie);
                     selected.setSpecializare(selectedSpecializare);
+                    selected.setVenitLunar(venit);
 
                     return selected;
                 } catch (Exception e) {
@@ -400,8 +428,6 @@ public class StudentPane extends BorderPane {
         });
     }
 
-
-
     private void stergeStudent() {
         Student selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
@@ -422,7 +448,6 @@ public class StudentPane extends BorderPane {
             alert.showAndWait();
         }
     }
-
 
     private void refreshTable() {
         List<Student> studenti = StudentRestClient.loadAllStudents();

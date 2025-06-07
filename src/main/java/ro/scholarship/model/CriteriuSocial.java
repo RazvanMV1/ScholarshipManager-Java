@@ -29,7 +29,12 @@ public class CriteriuSocial extends Criteriu {
 
     @Override
     public float evalueaza(Student student) {
-        return 0;
+        Double venitStudent = student.getVenitLunar();
+        if (venitStudent == null) return 0f;
+        // Dacă venitul studentului e sub maximul acceptat, primește punctaj (exemplu: invers proporțional cu venitul)
+        return (venitStudent <= venitMaximAcceptat)
+                ? getPondere() * (float) (venitMaximAcceptat - venitStudent)
+                : 0f;
     }
 
     @Override

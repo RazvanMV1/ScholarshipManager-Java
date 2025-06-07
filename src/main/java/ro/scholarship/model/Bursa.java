@@ -1,6 +1,8 @@
 package ro.scholarship.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +32,8 @@ public class Bursa {
     private SemestruUniversitar semestru;
 
     @OneToMany(mappedBy = "bursa", cascade = CascadeType.ALL, orphanRemoval = true)
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @JsonManagedReference // Ajută la serializare (fără buclă infinită)
     private List<Criteriu> criteriiEligibilitate = new ArrayList<>();
-
 
     @Column(name = "numar_burse_disponibile")
     private int numarBurseDisponibile;
@@ -66,6 +67,41 @@ public class Bursa {
 
     public int getNumarBurseDisponibile() { return numarBurseDisponibile; }
     public void setNumarBurseDisponibile(int numarBurseDisponibile) { this.numarBurseDisponibile = numarBurseDisponibile; }
+
+    // Returnează primul criteriu de medie asociat cu această bursă (sau null dacă nu există)
+    public CriteriuMedie getCriteriuMedie() {
+        return criteriiEligibilitate.stream()
+                .filter(c -> c instanceof CriteriuMedie)
+                .map(c -> (CriteriuMedie) c)
+                .findFirst()
+                .orElse(null);
+    }
+
+    // Returnează primul criteriu social asociat cu această bursă (sau null dacă nu există)
+    public CriteriuSocial getCriteriuSocial() {
+        return criteriiEligibilitate.stream()
+                .filter(c -> c instanceof CriteriuSocial)
+                .map(c -> (CriteriuSocial) c)
+                .findFirst()
+                .orElse(null);
+    }
+
+    // Dacă vrei să iei TOATE criteriile de un anumit tip ca listă:
+    @JsonIgnore // <<<<< CRUCIAL! Nu permite Jackson să o vadă ca property.
+    public List<CriteriuMedie> getCriteriiMedie() {
+        return criteriiEligibilitate.stream()
+                .filter(c -> c instanceof CriteriuMedie)
+                .map(c -> (CriteriuMedie) c)
+                .toList();
+    }
+
+    @JsonIgnore // <<<<< CRUCIAL!
+    public List<CriteriuSocial> getCriteriiSociale() {
+        return criteriiEligibilitate.stream()
+                .filter(c -> c instanceof CriteriuSocial)
+                .map(c -> (CriteriuSocial) c)
+                .toList();
+    }
 
     @Override
     public boolean equals(Object o) {

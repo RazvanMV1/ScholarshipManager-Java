@@ -1,12 +1,24 @@
 package ro.scholarship.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "criterii")
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME, // folosește câmp special pentru tip
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type"           // va apărea în JSON ca "type": "criteriuMedie" etc.
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = CriteriuMedie.class, name = "criteriuMedie"),
+        @JsonSubTypes.Type(value = CriteriuSocial.class, name = "criteriuSocial")
+})
 public abstract class Criteriu {
-
+    // ... restul codului identic ...
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "criterii_seq_gen")
     @SequenceGenerator(name = "criterii_seq_gen", sequenceName = "criterii_seq", allocationSize = 1)
@@ -23,6 +35,7 @@ public abstract class Criteriu {
 
     @ManyToOne
     @JoinColumn(name = "bursa_id")
+    @JsonBackReference
     private Bursa bursa;
 
     public Criteriu() {}

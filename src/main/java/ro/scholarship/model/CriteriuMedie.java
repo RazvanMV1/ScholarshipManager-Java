@@ -29,10 +29,12 @@ public class CriteriuMedie extends Criteriu {
 
     @Override
     public float evalueaza(Student student) {
-        if (student.getMedieSemestruAnterior() < medieMinimaAcceptata) {
-            return 0;
-        }
-        return student.getMedieSemestruAnterior() * getPondere();
+        Float medieStudent = student.getMedieSemestruAnterior();
+        if (medieStudent == null) return 0f;
+        // Dacă studentul are media peste minim, primește punctaj (sau formula ta)
+        return (medieStudent >= medieMinimaAcceptata)
+                ? medieStudent * getPondere()
+                : 0f;
     }
 
     @Override

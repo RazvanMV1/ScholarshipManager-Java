@@ -39,6 +39,8 @@ public class Student {
     @Column(name = "medie_semestru_anterior")
     private float medieSemestruAnterior;
 
+    @Column(name = "venit_lunar")
+    private Double venitLunar;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -46,16 +48,17 @@ public class Student {
 
     public Student() {}
 
-    public Student(String nume, String prenume, String cnp, int anStudiu) {
+    public Student(String nume, String prenume, String cnp, int anStudiu, Double venitLunar) {
         this.nume = nume;
         this.prenume = prenume;
         this.cnp = cnp;
         this.anStudiu = anStudiu;
+        this.venitLunar = venitLunar;
     }
 
     public Student(int id, String nume, String prenume, String cnp, String email,
                    String telefon, Specializare specializare, int anStudiu,
-                   float medieSemestruAnterior) {
+                   float medieSemestruAnterior, Double venitLunar) {
         this.id = id;
         this.nume = nume;
         this.prenume = prenume;
@@ -65,7 +68,12 @@ public class Student {
         this.specializare = specializare;
         this.anStudiu = anStudiu;
         this.medieSemestruAnterior = medieSemestruAnterior;
+        this.venitLunar = venitLunar;
     }
+
+
+    public Double getVenitLunar() { return venitLunar; }
+    public void setVenitLunar(Double venitLunar) { this.venitLunar = venitLunar; }
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -130,6 +138,7 @@ public class Student {
                 ", cnp='" + cnp + '\'' +
                 ", anStudiu=" + anStudiu +
                 ", medieSemestruAnterior=" + medieSemestruAnterior +
+                ", venitLunar=" + venitLunar +
                 ", specializare=" + (specializare != null ? specializare.getDenumire() : "nespecificat") +
                 '}';
     }

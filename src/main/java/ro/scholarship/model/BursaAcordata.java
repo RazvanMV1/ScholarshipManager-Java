@@ -24,18 +24,19 @@ public class BursaAcordata {
     private LocalDate dataAcordare;
 
     @Column(name = "este_activa")
-    private int esteActiva;
+    private int esteActiva; // 0/1
 
     @Column(name = "punctaj_total")
     private float punctajTotal;
 
     public BursaAcordata() {}
 
-    public BursaAcordata(Student student, Bursa bursa, LocalDate dataAcordare, boolean esteActiva, float punctajTotal) {
+    // Constructor folosind int pentru esteActiva
+    public BursaAcordata(Student student, Bursa bursa, LocalDate dataAcordare, int esteActiva, float punctajTotal) {
         this.student = student;
         this.bursa = bursa;
         this.dataAcordare = dataAcordare;
-        setEsteActiva(esteActiva);
+        this.esteActiva = esteActiva;
         this.punctajTotal = punctajTotal;
     }
 
@@ -54,10 +55,13 @@ public class BursaAcordata {
     public float getPunctajTotal() { return punctajTotal; }
     public void setPunctajTotal(float punctajTotal) { this.punctajTotal = punctajTotal; }
 
+    // Doar getter/setter pentru int!
     public int getEsteActiva() { return esteActiva; }
     public void setEsteActiva(int esteActiva) { this.esteActiva = esteActiva; }
-    public boolean isEsteActiva() { return esteActiva == 1; }
-    public void setEsteActiva(boolean esteActiva) { this.esteActiva = esteActiva ? 1 : 0; }
+
+    // Utilitar (nu setter Jackson!) pentru a lucra cu boolean în codul tău, dacă vrei:
+    public boolean isActiva() { return esteActiva == 1; }
+    public void setActiva(boolean activa) { this.esteActiva = activa ? 1 : 0; }
 
     @Override
     public boolean equals(Object o) {

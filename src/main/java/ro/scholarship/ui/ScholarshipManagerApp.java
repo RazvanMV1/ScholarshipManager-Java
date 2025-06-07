@@ -7,6 +7,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import ro.scholarship.ui.ManagerBursa.ManagerBursaPane;
 import ro.scholarship.ui.student.StudentPane;
 import ro.scholarship.ui.facultate.FacultatePane;
 import ro.scholarship.ui.specializare.SpecializarePane;
@@ -28,6 +29,9 @@ public class ScholarshipManagerApp extends Application {
 
         Tab burseTab = new Tab("Burse");
         burseTab.setContent(new BursaPane());
+
+        Tab managerBursaTab = new Tab("Manager burse", new ManagerBursaPane());
+        tabPane.getTabs().add(managerBursaTab);
 
         tabPane.getTabs().addAll(studentsTab, facultatiTab, specializariTab, burseTab);
 
