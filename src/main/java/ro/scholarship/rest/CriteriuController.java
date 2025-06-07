@@ -41,7 +41,6 @@ public class CriteriuController {
         criteriuRepository.deleteById(id);
     }
 
-    // Extra: criterii pentru o bursă
     @GetMapping("/bursa/{bursaId}")
     public List<Criteriu> getByBursa(@PathVariable int bursaId) {
         Bursa bursa = new Bursa();

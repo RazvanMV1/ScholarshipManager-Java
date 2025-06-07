@@ -1,8 +1,8 @@
 package ro.scholarship.ui.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.scholarship.model.Facultate;
+import ro.scholarship.util.JsonUtil;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,7 +13,7 @@ import java.util.List;
 public class FacultateRestClient {
     private static final String BASE_URL = "http://localhost:8081/api/facultati";
     private static final HttpClient client = HttpClient.newHttpClient();
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final com.fasterxml.jackson.databind.ObjectMapper mapper = JsonUtil.MAPPER;
 
     public static List<Facultate> loadAllFacultati() {
         try {
@@ -44,6 +44,7 @@ public class FacultateRestClient {
             return null;
         }
     }
+
     public static void updateFacultate(Facultate facultate) {
         try {
             String json = mapper.writeValueAsString(facultate);
@@ -58,7 +59,6 @@ public class FacultateRestClient {
             throw new RuntimeException("Eroare la update facultate!", e);
         }
     }
-
 
     public static void deleteFacultate(int id) {
         try {

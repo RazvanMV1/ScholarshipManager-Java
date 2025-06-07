@@ -5,14 +5,19 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.util.StringConverter;
 import ro.scholarship.model.Bursa;
+import ro.scholarship.model.TipBursa;
+import ro.scholarship.model.SemestruUniversitar;
 import ro.scholarship.ui.rest.BursaRestClient;
+import ro.scholarship.ui.rest.SemestruRestClient;
 
 public class BursaPane extends BorderPane {
 
     private TableView<Bursa> table;
-    private ObservableList<Bursa> bursasList;
+    private ObservableList<Bursa> burseList;
 
     public BursaPane() {
         table = new TableView<>();
@@ -30,71 +35,159 @@ public class BursaPane extends BorderPane {
         TableColumn<Bursa, Integer> colNumar = new TableColumn<>("Număr");
         colNumar.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getNumarBurseDisponibile()).asObject());
 
-        TableColumn<Bursa, String> colSemestru = new TableColumn<>("Semestru");
-        colSemestru.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(
-                data.getValue().getSemestru() != null ? data.getValue().getSemestru().toString() : "N/A"));
+        TableColumn<Bursa, SemestruUniversitar> colSemestru = new TableColumn<>("Semestru");
+        colSemestru.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getSemestru()));
+
+        colSemestru.setCellFactory(column -> new TableCell<Bursa, SemestruUniversitar>() {
+            @Override
+            protected void updateItem(SemestruUniversitar item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText("");
+                } else {
+                    setText(item.getAnUniversitar() + "/S" + item.getSemestru());
+                    setText(item.getAnUniversitar() + "/S" + item.getSemestru() + " (" + item.getDataInceput() + " - " + item.getDataSfarsit() + ")");
+                }
+            }
+        });
 
         table.getColumns().addAll(colDenumire, colTip, colValoare, colNumar, colSemestru);
 
-        bursasList = FXCollections.observableArrayList();
-        table.setItems(bursasList);
+        burseList = FXCollections.observableArrayList();
+        table.setItems(burseList);
 
         setCenter(table);
 
         Button btnAdd = new Button("Adaugă");
+        Button btnEdit = new Button("Editează");
         Button btnDelete = new Button("Șterge");
         Button btnRefresh = new Button("Refresh");
 
-        btnAdd.setOnAction(e -> adaugaBursa());
+        btnAdd.setOnAction(e -> adaugaSauEditeazaBursa(null));
+        btnEdit.setOnAction(e -> {
+            Bursa selected = table.getSelectionModel().getSelectedItem();
+            if (selected != null) adaugaSauEditeazaBursa(selected);
+            else showError("Selectează o bursă pentru editare!");
+        });
         btnDelete.setOnAction(e -> stergeBursa());
         btnRefresh.setOnAction(e -> refreshTable());
 
-        HBox buttonBar = new HBox(10, btnAdd, btnDelete, btnRefresh);
+        HBox buttonBar = new HBox(10, btnAdd, btnEdit, btnDelete, btnRefresh);
         buttonBar.setPadding(new Insets(10));
         setBottom(buttonBar);
 
         refreshTable();
     }
 
-    private void adaugaBursa() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setHeaderText("Introdu denumirea bursei:");
-        dialog.setTitle("Adaugă Bursă");
-        dialog.setContentText("Denumire:");
-        dialog.showAndWait().ifPresent(denumire -> {
-            try {
-                // Exemplu simplificat pentru demo (poți extinde cu dialoguri pentru toate câmpurile)
-                Bursa b = new Bursa();
-                b.setDenumire(denumire);
-                b.setTip(ro.scholarship.model.TipBursa.MERIT);
-                b.setValoare(1000);
-                b.setNumarBurseDisponibile(10);
-                // Poți seta și semestrul dacă vrei
-                Bursa saved = BursaRestClient.addBursa(b);
-                if (saved != null) {
-                    bursasList.add(saved);
-                    table.refresh();
-                } else {
-                    showError("Adăugarea a eșuat!");
+
+    private void adaugaSauEditeazaBursa(Bursa bursa) {
+        boolean isEdit = (bursa != null);
+
+        Dialog<Bursa> dialog = new Dialog<>();
+        dialog.setTitle(isEdit ? "Editează Bursă" : "Adaugă Bursă");
+        dialog.setHeaderText(isEdit ? "Modifică datele bursei:" : "Completează datele pentru noua bursă:");
+
+        TextField fieldDenumire = new TextField(isEdit ? bursa.getDenumire() : "");
+        ComboBox<TipBursa> comboTip = new ComboBox<>(FXCollections.observableArrayList(TipBursa.values()));
+        comboTip.setValue(isEdit && bursa.getTip() != null ? bursa.getTip() : TipBursa.MERIT);
+
+        TextField fieldValoare = new TextField(isEdit ? String.valueOf(bursa.getValoare()) : "");
+        TextField fieldNumar = new TextField(isEdit ? String.valueOf(bursa.getNumarBurseDisponibile()) : "");
+
+        ComboBox<SemestruUniversitar> comboSemestru = new ComboBox<>(
+                FXCollections.observableArrayList(SemestruRestClient.loadAllSemestre())
+        );
+
+        comboSemestru.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(SemestruUniversitar s) {
+                return s == null ? "" : s.getAnUniversitar() + "/S" + s.getSemestru();
+            }
+            @Override
+            public SemestruUniversitar fromString(String s) { return null; }
+        });
+        if (isEdit && bursa.getSemestru() != null)
+            comboSemestru.setValue(bursa.getSemestru());
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10); grid.setVgap(10); grid.setPadding(new Insets(20, 120, 10, 10));
+        grid.add(new Label("Denumire:"), 0, 0); grid.add(fieldDenumire, 1, 0);
+        grid.add(new Label("Tip:"), 0, 1); grid.add(comboTip, 1, 1);
+        grid.add(new Label("Valoare:"), 0, 2); grid.add(fieldValoare, 1, 2);
+        grid.add(new Label("Număr burse:"), 0, 3); grid.add(fieldNumar, 1, 3);
+        grid.add(new Label("Semestru:"), 0, 4); grid.add(comboSemestru, 1, 4);
+
+        dialog.getDialogPane().setContent(grid);
+        ButtonType saveButtonType = new ButtonType(isEdit ? "Salvează" : "Adaugă", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                try {
+                    String denumire = fieldDenumire.getText().trim();
+                    TipBursa tip = comboTip.getValue();
+                    float valoare = Float.parseFloat(fieldValoare.getText().trim());
+                    int numar = Integer.parseInt(fieldNumar.getText().trim());
+                    SemestruUniversitar semestru = comboSemestru.getValue();
+
+                    if (denumire.isEmpty()) throw new IllegalArgumentException("Denumirea este obligatorie!");
+                    if (valoare <= 0) throw new IllegalArgumentException("Valoarea trebuie să fie pozitivă!");
+                    if (numar <= 0) throw new IllegalArgumentException("Numărul trebuie să fie pozitiv!");
+                    if (semestru == null) throw new IllegalArgumentException("Alege un semestru!");
+
+                    Bursa nouaBursa = isEdit ? bursa : new Bursa();
+                    nouaBursa.setDenumire(denumire);
+                    nouaBursa.setTip(tip);
+                    nouaBursa.setValoare(valoare);
+                    nouaBursa.setNumarBurseDisponibile(numar);
+                    nouaBursa.setSemestru(semestru);
+                    return nouaBursa;
+                } catch (Exception ex) {
+                    showError("Date incorecte: " + ex.getMessage());
+                    return null;
                 }
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(result -> {
+            try {
+                if (isEdit) {
+                    BursaRestClient.updateBursa(result);
+                } else {
+                    Bursa saved = BursaRestClient.addBursa(result);
+                    if (saved != null) burseList.add(saved);
+                }
+                refreshTable();
             } catch (Exception ex) {
-                showError("Eroare la adăugare: " + ex.getMessage());
+                showError("Eroare la salvare: " + ex.getMessage());
             }
         });
     }
 
+
     private void stergeBursa() {
         Bursa selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            BursaRestClient.deleteBursa(selected.getId());
-            bursasList.remove(selected);
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Ești sigur că vrei să ștergi această bursă?", ButtonType.YES, ButtonType.NO);
+            confirm.setHeaderText("Confirmare ștergere");
+            confirm.showAndWait().ifPresent(type -> {
+                if (type == ButtonType.YES) {
+                    try {
+                        BursaRestClient.deleteBursa(selected.getId());
+                        burseList.remove(selected);
+                    } catch (Exception e) {
+                        showError("Eroare la ștergere: " + e.getMessage());
+                    }
+                }
+            });
         } else {
             showError("Selectează o bursă pentru ștergere!");
         }
     }
 
     private void refreshTable() {
-        bursasList.setAll(BursaRestClient.loadAllBurse());
+        burseList.setAll(BursaRestClient.loadAllBurse());
     }
 
     private void showError(String message) {
@@ -102,3 +195,6 @@ public class BursaPane extends BorderPane {
         alert.showAndWait();
     }
 }
+
+
+

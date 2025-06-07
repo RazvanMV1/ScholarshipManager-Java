@@ -29,8 +29,6 @@ public class CriteriuSocial extends Criteriu {
 
     @Override
     public float evalueaza(Student student) {
-        // Exemplu: dacă Student are getVenitFamilie() - altfel lasă 0.
-        // return student.getVenitFamilie() <= venitMaximAcceptat ? getPondere() : 0;
         return 0;
     }
 

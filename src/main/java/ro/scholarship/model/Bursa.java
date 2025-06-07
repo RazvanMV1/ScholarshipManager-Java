@@ -1,5 +1,6 @@
 package ro.scholarship.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "burse")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Bursa {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "burse_seq_gen")

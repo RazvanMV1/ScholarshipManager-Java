@@ -42,7 +42,6 @@ public class BursaAcordataController {
         bursaAcordataRepository.deleteById(id);
     }
 
-    // Extra: GET burse acordate pentru un student
     @GetMapping("/student/{studentId}")
     public List<BursaAcordata> getByStudent(@PathVariable int studentId) {
         Student student = new Student();
@@ -50,7 +49,6 @@ public class BursaAcordataController {
         return bursaAcordataRepository.findByStudent(student);
     }
 
-    // Extra: GET burse acordate pentru o bursă
     @GetMapping("/bursa/{bursaId}")
     public List<BursaAcordata> getByBursa(@PathVariable int bursaId) {
         Bursa bursa = new Bursa();

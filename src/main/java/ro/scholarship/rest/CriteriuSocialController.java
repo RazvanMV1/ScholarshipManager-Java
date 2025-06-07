@@ -41,7 +41,6 @@ public class CriteriuSocialController {
         criteriuSocialRepository.deleteById(id);
     }
 
-    // Criterii sociale pentru o bursă
     @GetMapping("/bursa/{bursaId}")
     public List<CriteriuSocial> getByBursa(@PathVariable int bursaId) {
         Bursa bursa = new Bursa();

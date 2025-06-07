@@ -96,7 +96,7 @@ public class Facultate {
         return false;
     }
 
-    @JsonProperty("numarTotalLocuriBurse") // <-- expune ca proprietate JSON
+    @JsonProperty("numarTotalLocuriBurse")
     public int getNumarTotalLocuriBurse() {
         return specializari.stream()
                 .mapToInt(Specializare::getNumarLocuriBurse)

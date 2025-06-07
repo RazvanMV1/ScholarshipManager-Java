@@ -40,7 +40,6 @@ public class CriteriuMedieController {
         criteriuMedieRepository.deleteById(id);
     }
 
-    // Extra: criterii medie pentru o bursă
     @GetMapping("/bursa/{bursaId}")
     public List<CriteriuMedie> getByBursa(@PathVariable int bursaId) {
         var bursa = new ro.scholarship.model.Bursa();

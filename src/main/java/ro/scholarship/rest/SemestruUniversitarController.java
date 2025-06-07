@@ -40,7 +40,6 @@ public class SemestruUniversitarController {
         semestruRepo.deleteById(id);
     }
 
-    // Ex: GET semestre după an universitar
     @GetMapping("/an/{anUniversitar}")
     public List<SemestruUniversitar> getByAnUniversitar(@PathVariable int anUniversitar) {
         return semestruRepo.findByAnUniversitar(anUniversitar);

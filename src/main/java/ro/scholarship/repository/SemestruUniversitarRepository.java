@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface SemestruUniversitarRepository extends JpaRepository<SemestruUniversitar, Integer> {
     List<SemestruUniversitar> findByAnUniversitar(int anUniversitar);
-    // Poți adăuga și alte metode custom, ex: findBySemestru(int semestru)
+
 }

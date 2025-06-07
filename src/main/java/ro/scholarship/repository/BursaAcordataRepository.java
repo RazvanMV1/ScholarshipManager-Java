@@ -11,5 +11,4 @@ public interface BursaAcordataRepository extends JpaRepository<BursaAcordata, In
     List<BursaAcordata> findByStudent(Student student);
     List<BursaAcordata> findByBursa(Bursa bursa);
     List<BursaAcordata> findByEsteActiva(int esteActiva);
-    // Poți adăuga și alte metode custom după nevoie
 }

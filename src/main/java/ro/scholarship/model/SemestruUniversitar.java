@@ -1,11 +1,13 @@
 package ro.scholarship.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-@Table(name = "semestre_universitare")
+@Table(name = "SEMESTRE_UNIVERSITARE")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SemestruUniversitar {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "semestre_universitare_seq_gen")
@@ -16,7 +18,7 @@ public class SemestruUniversitar {
     private int anUniversitar;
 
     @Column(nullable = false)
-    private int semestru; // 1 sau 2
+    private int semestru;
 
     @Column(name = "data_inceput")
     private LocalDate dataInceput;

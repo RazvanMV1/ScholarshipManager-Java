@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface CriteriuMedieRepository extends JpaRepository<CriteriuMedie, Integer> {
     List<CriteriuMedie> findByBursa(Bursa bursa);
-    // poți adăuga și alte metode custom după nevoie
 }

@@ -17,19 +17,15 @@ public class ScholarshipManagerApp extends Application {
     public void start(Stage primaryStage) {
         TabPane tabPane = new TabPane();
 
-        // Tab pentru studenți
         Tab studentsTab = new Tab("Studenți");
         studentsTab.setContent(new StudentPane());
 
-        // Tab pentru facultăți
         Tab facultatiTab = new Tab("Facultăți");
         facultatiTab.setContent(new FacultatePane());
 
-        // Tab pentru specializări
         Tab specializariTab = new Tab("Specializări");
         specializariTab.setContent(new SpecializarePane());
 
-        // Tab pentru burse
         Tab burseTab = new Tab("Burse");
         burseTab.setContent(new BursaPane());
 

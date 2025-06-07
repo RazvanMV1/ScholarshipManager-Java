@@ -8,7 +8,6 @@ import ro.scholarship.model.SemestruUniversitar;
 import java.util.List;
 
 public interface BursaRepository extends JpaRepository<Bursa, Integer> {
-    // Metode custom, dacă ai nevoie:
     List<Bursa> findByTip(TipBursa tip);
     List<Bursa> findBySemestru(SemestruUniversitar semestru);
     List<Bursa> findByDenumire(String denumire);

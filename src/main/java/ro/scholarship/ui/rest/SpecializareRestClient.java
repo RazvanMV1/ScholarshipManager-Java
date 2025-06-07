@@ -1,21 +1,19 @@
-
 package ro.scholarship.ui.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.scholarship.model.Specializare;
+import ro.scholarship.util.JsonUtil;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
 import java.util.List;
 
 public class SpecializareRestClient {
     private static final String BASE_URL = "http://localhost:8081/api/specializari";
     private static final HttpClient client = HttpClient.newHttpClient();
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final com.fasterxml.jackson.databind.ObjectMapper mapper = JsonUtil.MAPPER;
 
     public static List<Specializare> loadAllSpecializari() {
         try {
@@ -49,19 +47,18 @@ public class SpecializareRestClient {
 
     public static void updateSpecializare(Specializare specializare) {
         try {
-            String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(specializare);
-            java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
-                    .uri(new java.net.URI(BASE_URL+"/" + specializare.getId()))
-                    .PUT(java.net.http.HttpRequest.BodyPublishers.ofString(json))
+            String json = mapper.writeValueAsString(specializare);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(BASE_URL + "/" + specializare.getId()))
+                    .PUT(HttpRequest.BodyPublishers.ofString(json))
                     .header("Content-Type", "application/json")
                     .build();
-            java.net.http.HttpClient.newHttpClient().send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+            client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Eroare la update specializare!", e);
         }
     }
-
 
     public static void deleteSpecializare(int id) {
         try {

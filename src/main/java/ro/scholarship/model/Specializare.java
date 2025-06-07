@@ -87,7 +87,7 @@ public class Specializare {
 
     @Override
     public String toString() {
-        return denumire; // DOAR ASTA
+        return denumire;
     }
 
 }
