@@ -1,4 +1,3 @@
-// CriteriuMedieServiceImpl.java
 package ro.scholarship.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ro.scholarship.model.Bursa;
 import ro.scholarship.model.CriteriuMedie;
 import ro.scholarship.repository.CriteriuMedieRepository;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -49,14 +49,16 @@ public class CriteriuMedieServiceImpl implements CriteriuMedieService {
 
     @Override
     public List<CriteriuMedie> findByBursa(int bursaId) {
-        Bursa bursa = new Bursa();
-        bursa.setId(bursaId);
-        return criteriuMedieRepository.findByBursa(bursa);
+        // Metoda corectă: query după ID, nu după instanță golită
+        return criteriuMedieRepository.findByBursaId(bursaId);
     }
 
     @Override
     public boolean isValid(CriteriuMedie criteriuMedie) {
-        // Pune aici regulile tale (exemplu simplu)
-        return criteriuMedie.getDenumire() != null && !criteriuMedie.getDenumire().isBlank();
+        // Verifică toate câmpurile importante
+        return criteriuMedie != null &&
+                criteriuMedie.getDenumire() != null && !criteriuMedie.getDenumire().isBlank() &&
+                criteriuMedie.getPondere() > 0 &&
+                criteriuMedie.getMedieMinimaAcceptata() >= 0;
     }
 }

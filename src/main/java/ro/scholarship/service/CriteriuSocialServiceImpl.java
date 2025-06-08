@@ -3,7 +3,6 @@ package ro.scholarship.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.scholarship.model.CriteriuSocial;
-import ro.scholarship.model.Bursa;
 import ro.scholarship.repository.CriteriuSocialRepository;
 
 import java.util.List;
@@ -47,13 +46,21 @@ public class CriteriuSocialServiceImpl implements CriteriuSocialService {
         criteriuSocialRepository.deleteById(id);
     }
 
+    // Metoda principală recomandată (după id bursă)
     @Override
-    public boolean isValid(CriteriuSocial criteriuSocial) {
-        return criteriuSocial.getDenumire() != null && !criteriuSocial.getDenumire().isBlank();
+    public List<CriteriuSocial> findByBursaId(int bursaId) {
+        return criteriuSocialRepository.findByBursaId(bursaId);
+    }
+
+    public List<CriteriuSocial> findByBursa(ro.scholarship.model.Bursa bursa) {
+        return criteriuSocialRepository.findByBursaId(bursa.getId());
     }
 
     @Override
-    public List<CriteriuSocial> findByBursa(Bursa bursa) {
-        return criteriuSocialRepository.findByBursa(bursa);
+    public boolean isValid(CriteriuSocial criteriuSocial) {
+        return criteriuSocial != null &&
+                criteriuSocial.getDenumire() != null && !criteriuSocial.getDenumire().isBlank() &&
+                criteriuSocial.getPondere() > 0 &&
+                criteriuSocial.getVenitMaximAcceptat() >= 0;
     }
 }

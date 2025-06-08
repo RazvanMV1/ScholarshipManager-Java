@@ -2,10 +2,7 @@ package ro.scholarship.model;
 
 public enum TipBursa {
     MERIT("Bursa de merit"),
-    STUDIU("Bursa de studiu"),
-    SOCIALA("Bursa sociala"),
-    PERFORMANTA("Bursa de performanta"),
-    SPECIALA("Bursa speciala");
+    SOCIALA("Bursa sociala");
 
     private final String descriere;
 

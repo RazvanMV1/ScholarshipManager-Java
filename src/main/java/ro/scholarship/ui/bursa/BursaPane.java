@@ -1,5 +1,9 @@
 package ro.scholarship.ui.bursa;
 
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -11,43 +15,41 @@ import javafx.util.StringConverter;
 import ro.scholarship.model.Bursa;
 import ro.scholarship.model.TipBursa;
 import ro.scholarship.model.SemestruUniversitar;
+import ro.scholarship.ui.ManagerBursa.ManagerBursaPane;
 import ro.scholarship.ui.rest.BursaRestClient;
 import ro.scholarship.ui.rest.SemestruRestClient;
 
 public class BursaPane extends BorderPane {
 
-    private TableView<Bursa> table;
-    private ObservableList<Bursa> burseList;
+    private final TableView<Bursa> table;
+    private final ObservableList<Bursa> burseList;
+    private final ManagerBursaPane managerBursaPane; // referință pentru refresh
 
-    public BursaPane() {
+    public BursaPane(ManagerBursaPane managerBursaPane) {
+        this.managerBursaPane = managerBursaPane;
         table = new TableView<>();
 
         TableColumn<Bursa, String> colDenumire = new TableColumn<>("Denumire");
-        colDenumire.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getDenumire()));
+        colDenumire.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDenumire()));
 
         TableColumn<Bursa, String> colTip = new TableColumn<>("Tip");
-        colTip.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(
+        colTip.setCellValueFactory(data -> new SimpleStringProperty(
                 data.getValue().getTip() != null ? data.getValue().getTip().toString() : "N/A"));
 
         TableColumn<Bursa, Number> colValoare = new TableColumn<>("Valoare");
-        colValoare.setCellValueFactory(data -> new javafx.beans.property.SimpleFloatProperty(data.getValue().getValoare()));
+        colValoare.setCellValueFactory(data -> new SimpleFloatProperty(data.getValue().getValoare()));
 
         TableColumn<Bursa, Integer> colNumar = new TableColumn<>("Număr");
-        colNumar.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getNumarBurseDisponibile()).asObject());
+        colNumar.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getNumarBurseDisponibile()).asObject());
 
         TableColumn<Bursa, SemestruUniversitar> colSemestru = new TableColumn<>("Semestru");
-        colSemestru.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getSemestru()));
-
-        colSemestru.setCellFactory(column -> new TableCell<Bursa, SemestruUniversitar>() {
+        colSemestru.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getSemestru()));
+        colSemestru.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(SemestruUniversitar item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText("");
-                } else {
-                    setText(item.getAnUniversitar() + "/S" + item.getSemestru());
-                    setText(item.getAnUniversitar() + "/S" + item.getSemestru() + " (" + item.getDataInceput() + " - " + item.getDataSfarsit() + ")");
-                }
+                if (empty || item == null) setText("");
+                else setText(item.getAnUniversitar() + "/S" + item.getSemestru() + " (" + item.getDataInceput() + " - " + item.getDataSfarsit() + ")");
             }
         });
 
@@ -70,15 +72,14 @@ public class BursaPane extends BorderPane {
             else showError("Selectează o bursă pentru editare!");
         });
         btnDelete.setOnAction(e -> stergeBursa());
-        btnRefresh.setOnAction(e -> refreshTable());
+        btnRefresh.setOnAction(e -> refreshTableAndManager());
 
         HBox buttonBar = new HBox(10, btnAdd, btnEdit, btnDelete, btnRefresh);
         buttonBar.setPadding(new Insets(10));
         setBottom(buttonBar);
 
-        refreshTable();
+        refreshTableAndManager();
     }
-
 
     private void adaugaSauEditeazaBursa(Bursa bursa) {
         boolean isEdit = (bursa != null);
@@ -97,7 +98,6 @@ public class BursaPane extends BorderPane {
         ComboBox<SemestruUniversitar> comboSemestru = new ComboBox<>(
                 FXCollections.observableArrayList(SemestruRestClient.loadAllSemestre())
         );
-
         comboSemestru.setConverter(new StringConverter<>() {
             @Override
             public String toString(SemestruUniversitar s) {
@@ -158,36 +158,41 @@ public class BursaPane extends BorderPane {
                     Bursa saved = BursaRestClient.addBursa(result);
                     if (saved != null) burseList.add(saved);
                 }
-                refreshTable();
+                refreshTableAndManager();
             } catch (Exception ex) {
                 showError("Eroare la salvare: " + ex.getMessage());
             }
         });
     }
 
-
     private void stergeBursa() {
         Bursa selected = table.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Ești sigur că vrei să ștergi această bursă?", ButtonType.YES, ButtonType.NO);
-            confirm.setHeaderText("Confirmare ștergere");
-            confirm.showAndWait().ifPresent(type -> {
-                if (type == ButtonType.YES) {
-                    try {
-                        BursaRestClient.deleteBursa(selected.getId());
-                        burseList.remove(selected);
-                    } catch (Exception e) {
-                        showError("Eroare la ștergere: " + e.getMessage());
-                    }
-                }
-            });
-        } else {
+        if (selected == null) {
             showError("Selectează o bursă pentru ștergere!");
+            return;
         }
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Sigur vrei să ștergi bursa \"" + selected.getDenumire() + "\"?",
+                ButtonType.YES, ButtonType.NO);
+        confirm.setHeaderText("Confirmare ștergere");
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.YES) {
+                try {
+                    BursaRestClient.deleteBursa(selected.getId());
+                    refreshTableAndManager();
+                } catch (Exception e) {
+                    showError("Eroare la ștergere! " + e.getMessage());
+                }
+            }
+        });
     }
 
-    private void refreshTable() {
+    // Dă refresh atât la tabel cât și la manager pane (ca să se vadă la procesare instant)
+    private void refreshTableAndManager() {
         burseList.setAll(BursaRestClient.loadAllBurse());
+        if (managerBursaPane != null) {
+            managerBursaPane.refreshBurse();
+        }
     }
 
     private void showError(String message) {
@@ -195,6 +200,3 @@ public class BursaPane extends BorderPane {
         alert.showAndWait();
     }
 }
-
-
-

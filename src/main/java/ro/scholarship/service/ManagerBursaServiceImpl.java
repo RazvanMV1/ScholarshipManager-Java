@@ -6,6 +6,8 @@ import ro.scholarship.model.*;
 import ro.scholarship.repository.BursaAcordataRepository;
 import ro.scholarship.repository.BursaRepository;
 import ro.scholarship.repository.StudentRepository;
+import ro.scholarship.repository.CriteriuMedieRepository;
+import ro.scholarship.repository.CriteriuSocialRepository;
 
 import java.util.Comparator;
 import java.util.List;
@@ -23,17 +25,32 @@ public class ManagerBursaServiceImpl implements ManagerBursaService {
     @Autowired
     private BursaAcordataRepository bursaAcordataRepository;
 
-    @Override
+    @Autowired
+    private CriteriuMedieRepository criteriuMedieRepository;
+
+    @Autowired
+    private CriteriuSocialRepository criteriuSocialRepository;
+
     public List<BursaAcordata> proceseazaBursa(int idBursa) {
         Bursa bursa = bursaRepository.findById(idBursa)
                 .orElseThrow(() -> new IllegalArgumentException("Bursa nu exista!"));
 
-        // Extrage criteriile din bursa (folosește metodele OOP)
+        // Extrage criteriile asociate bursei
         CriteriuMedie criteriuMedie = bursa.getCriteriuMedie();
         CriteriuSocial criteriuSocial = bursa.getCriteriuSocial();
 
-        Float medieMinima = criteriuMedie != null ? criteriuMedie.getMedieMinimaAcceptata() : null;
-        Float venitMaxim = criteriuSocial != null ? criteriuSocial.getVenitMaximAcceptat() : null;
+        if (criteriuMedie == null && bursa.getTip() == TipBursa.MERIT) {
+            criteriuMedie = criteriuMedieRepository.findAll().stream().findFirst().orElse(null);
+        }
+        if (criteriuSocial == null && bursa.getTip() == TipBursa.SOCIALA) {
+            criteriuSocial = criteriuSocialRepository.findAll().stream().findFirst().orElse(null);
+        }
+
+        // Acum declară-le final
+        final CriteriuMedie finalCriteriuMedie = criteriuMedie;
+        final CriteriuSocial finalCriteriuSocial = criteriuSocial;
+        final Float medieMinima = finalCriteriuMedie != null ? finalCriteriuMedie.getMedieMinimaAcceptata() : null;
+        final Float venitMaxim = finalCriteriuSocial != null ? finalCriteriuSocial.getVenitMaximAcceptat() : null;
 
         List<Student> studenti = studentRepository.findAll();
 
@@ -42,8 +59,7 @@ public class ManagerBursaServiceImpl implements ManagerBursaService {
                 .filter(s -> venitMaxim == null || (s.getVenitLunar() != null && s.getVenitLunar() <= venitMaxim))
                 .collect(Collectors.toList());
 
-        // Calculează scorul pentru fiecare student după TOATE criteriile bursei
-        List<BursaAcordata> rezultate = eligibili.stream()
+        return eligibili.stream()
                 .sorted(Comparator.comparing(Student::getMedieSemestruAnterior).reversed()
                         .thenComparing(s -> s.getVenitLunar() != null ? s.getVenitLunar() : Double.MAX_VALUE))
                 .limit(bursa.getNumarBurseDisponibile())
@@ -53,16 +69,23 @@ public class ManagerBursaServiceImpl implements ManagerBursaService {
                     acordata.setBursa(bursa);
                     acordata.setEsteActiva(1); // activă
 
-                    // Calculează scorul total pentru fiecare criteriu
                     float punctajTotal = 0.0f;
-                    for (Criteriu criteriu : bursa.getCriteriiEligibilitate()) {
-                        punctajTotal += criteriu.evalueaza(student);
+                    if (!bursa.getCriteriiEligibilitate().isEmpty()) {
+                        for (Criteriu criteriu : bursa.getCriteriiEligibilitate()) {
+                            punctajTotal += criteriu.evalueaza(student);
+                        }
+                    } else {
+                        if (finalCriteriuMedie != null) {
+                            punctajTotal += finalCriteriuMedie.evalueaza(student);
+                        }
+                        if (finalCriteriuSocial != null) {
+                            punctajTotal += finalCriteriuSocial.evalueaza(student);
+                        }
                     }
                     acordata.setPunctajTotal(punctajTotal);
-
                     return bursaAcordataRepository.save(acordata);
-                }).collect(Collectors.toList());
-
-        return rezultate;
+                })
+                .collect(Collectors.toList());
     }
+
 }

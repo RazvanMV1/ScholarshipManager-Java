@@ -27,13 +27,18 @@ public class ScholarshipManagerApp extends Application {
         Tab specializariTab = new Tab("Specializări");
         specializariTab.setContent(new SpecializarePane());
 
+        ManagerBursaPane managerBursaPane = new ManagerBursaPane();
+        BursaPane bursaPane = new BursaPane(managerBursaPane);
+
         Tab burseTab = new Tab("Burse");
-        burseTab.setContent(new BursaPane());
+        burseTab.setContent(bursaPane);
 
-        Tab managerBursaTab = new Tab("Manager burse", new ManagerBursaPane());
-        tabPane.getTabs().add(managerBursaTab);
+        Tab managerBursaTab = new Tab("Manager burse");
+        managerBursaTab.setContent(managerBursaPane);
 
-        tabPane.getTabs().addAll(studentsTab, facultatiTab, specializariTab, burseTab);
+
+
+        tabPane.getTabs().addAll(studentsTab, facultatiTab, specializariTab, burseTab, managerBursaTab);
 
         BorderPane root = new BorderPane(tabPane);
         root.setTop(new Label("Scholarship Manager"));

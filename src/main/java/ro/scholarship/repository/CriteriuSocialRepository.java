@@ -7,5 +7,6 @@ import ro.scholarship.model.Bursa;
 import java.util.List;
 
 public interface CriteriuSocialRepository extends JpaRepository<CriteriuSocial, Integer> {
-    List<CriteriuSocial> findByBursa(Bursa bursa);
+    List<CriteriuSocial> findByBursaId(int bursaId);
+
 }
