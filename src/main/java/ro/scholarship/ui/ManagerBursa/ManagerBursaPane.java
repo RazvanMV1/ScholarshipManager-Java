@@ -17,7 +17,6 @@ public class ManagerBursaPane extends VBox {
     private final Button proceseazaBtn = new Button("Procesează");
     private final TableView<BursaAcordata> rezultateTable = new TableView<>();
 
-    // Etichete pentru detalii
     private final Label lblDenumire = new Label();
     private final Label lblTip = new Label();
     private final Label lblValoare = new Label();
@@ -112,7 +111,6 @@ public class ManagerBursaPane extends VBox {
         );
     }
 
-    // Poate fi apelat oricând pentru a reîncărca lista
     public void refreshBurse() {
         List<Bursa> burse = BursaRestClient.loadAllBurse();
         bursaComboBox.setItems(FXCollections.observableArrayList(burse));

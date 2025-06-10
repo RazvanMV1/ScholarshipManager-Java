@@ -11,6 +11,5 @@ public interface SemestruUniversitarService {
     SemestruUniversitar update(int id, SemestruUniversitar sem);
     void delete(int id);
 
-    // Adaugă această metodă:
     List<SemestruUniversitar> findByAnUniversitar(int anUniversitar);
 }

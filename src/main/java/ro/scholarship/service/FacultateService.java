@@ -11,6 +11,5 @@ public interface FacultateService {
     Facultate update(int id, Facultate facultate);
     void delete(int id);
 
-    // Poți pune validări custom dacă vrei (ex: buget pozitiv)
     boolean isValid(Facultate facultate);
 }

@@ -23,7 +23,7 @@ public class BursaPane extends BorderPane {
 
     private final TableView<Bursa> table;
     private final ObservableList<Bursa> burseList;
-    private final ManagerBursaPane managerBursaPane; // referință pentru refresh
+    private final ManagerBursaPane managerBursaPane;
 
     public BursaPane(ManagerBursaPane managerBursaPane) {
         this.managerBursaPane = managerBursaPane;
@@ -187,7 +187,6 @@ public class BursaPane extends BorderPane {
         });
     }
 
-    // Dă refresh atât la tabel cât și la manager pane (ca să se vadă la procesare instant)
     private void refreshTableAndManager() {
         burseList.setAll(BursaRestClient.loadAllBurse());
         if (managerBursaPane != null) {

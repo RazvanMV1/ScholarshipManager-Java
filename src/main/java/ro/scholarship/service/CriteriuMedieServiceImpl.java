@@ -49,13 +49,11 @@ public class CriteriuMedieServiceImpl implements CriteriuMedieService {
 
     @Override
     public List<CriteriuMedie> findByBursa(int bursaId) {
-        // Metoda corectă: query după ID, nu după instanță golită
         return criteriuMedieRepository.findByBursaId(bursaId);
     }
 
     @Override
     public boolean isValid(CriteriuMedie criteriuMedie) {
-        // Verifică toate câmpurile importante
         return criteriuMedie != null &&
                 criteriuMedie.getDenumire() != null && !criteriuMedie.getDenumire().isBlank() &&
                 criteriuMedie.getPondere() > 0 &&

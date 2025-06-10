@@ -11,6 +11,5 @@ public interface StudentService {
     Student update(int id, Student student);
     void delete(int id);
 
-    // Aici poți pune reguli de business specifice
-    boolean isValid(Student student); // Exemplu de validare custom
+    boolean isValid(Student student);
 }

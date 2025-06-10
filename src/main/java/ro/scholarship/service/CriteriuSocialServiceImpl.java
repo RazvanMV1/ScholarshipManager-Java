@@ -46,7 +46,6 @@ public class CriteriuSocialServiceImpl implements CriteriuSocialService {
         criteriuSocialRepository.deleteById(id);
     }
 
-    // Metoda principală recomandată (după id bursă)
     @Override
     public List<CriteriuSocial> findByBursaId(int bursaId) {
         return criteriuSocialRepository.findByBursaId(bursaId);

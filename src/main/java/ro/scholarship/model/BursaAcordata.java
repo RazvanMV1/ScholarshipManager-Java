@@ -24,7 +24,7 @@ public class BursaAcordata {
     private LocalDate dataAcordare;
 
     @Column(name = "este_activa")
-    private int esteActiva; // 0/1
+    private int esteActiva;
 
     @Column(name = "punctaj_total")
     private float punctajTotal;

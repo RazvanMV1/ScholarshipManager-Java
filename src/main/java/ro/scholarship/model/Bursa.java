@@ -32,7 +32,7 @@ public class Bursa {
     private SemestruUniversitar semestru;
 
     @OneToMany(mappedBy = "bursa", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // Ajută la serializare (fără buclă infinită)
+    @JsonManagedReference
     private List<Criteriu> criteriiEligibilitate = new ArrayList<>();
 
     @Column(name = "numar_burse_disponibile")
@@ -68,7 +68,6 @@ public class Bursa {
     public int getNumarBurseDisponibile() { return numarBurseDisponibile; }
     public void setNumarBurseDisponibile(int numarBurseDisponibile) { this.numarBurseDisponibile = numarBurseDisponibile; }
 
-    // Returnează primul criteriu de medie asociat cu această bursă (sau null dacă nu există)
     public CriteriuMedie getCriteriuMedie() {
         return criteriiEligibilitate.stream()
                 .filter(c -> c instanceof CriteriuMedie)
@@ -77,7 +76,6 @@ public class Bursa {
                 .orElse(null);
     }
 
-    // Returnează primul criteriu social asociat cu această bursă (sau null dacă nu există)
     public CriteriuSocial getCriteriuSocial() {
         return criteriiEligibilitate.stream()
                 .filter(c -> c instanceof CriteriuSocial)
@@ -86,8 +84,7 @@ public class Bursa {
                 .orElse(null);
     }
 
-    // Dacă vrei să iei TOATE criteriile de un anumit tip ca listă:
-    @JsonIgnore // <<<<< CRUCIAL! Nu permite Jackson să o vadă ca property.
+    @JsonIgnore
     public List<CriteriuMedie> getCriteriiMedie() {
         return criteriiEligibilitate.stream()
                 .filter(c -> c instanceof CriteriuMedie)
@@ -95,7 +92,7 @@ public class Bursa {
                 .toList();
     }
 
-    @JsonIgnore // <<<<< CRUCIAL!
+    @JsonIgnore
     public List<CriteriuSocial> getCriteriiSociale() {
         return criteriiEligibilitate.stream()
                 .filter(c -> c instanceof CriteriuSocial)

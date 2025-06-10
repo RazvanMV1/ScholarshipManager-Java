@@ -13,10 +13,8 @@ public interface CriteriuSocialService {
     CriteriuSocial update(int id, CriteriuSocial criteriuSocial);
     void delete(int id);
 
-    // ADĂUGĂ ASTA:
     List<CriteriuSocial> findByBursaId(int bursaId);
 
-    // OPȚIONAL, dacă vrei și după Bursa ca obiect:
     List<CriteriuSocial> findByBursa(Bursa bursa);
 
     boolean isValid(CriteriuSocial criteriuSocial);

@@ -39,7 +39,6 @@ public class SemestruUniversitarServiceImpl implements SemestruUniversitarServic
         semestruRepo.deleteById(id);
     }
 
-    // Implementează această metodă:
     @Override
     public List<SemestruUniversitar> findByAnUniversitar(int anUniversitar) {
         return semestruRepo.findByAnUniversitar(anUniversitar);

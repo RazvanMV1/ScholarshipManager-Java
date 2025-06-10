@@ -23,7 +23,6 @@ public class ManagerBursaRestClient {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // Folosește mapper-ul corect!
             BursaAcordata[] rezultat = mapper.readValue(response.body(), BursaAcordata[].class);
             return Arrays.asList(rezultat);
         } catch (Exception e) {

@@ -31,7 +31,6 @@ public class CriteriuMedie extends Criteriu {
     public float evalueaza(Student student) {
         Float medieStudent = student.getMedieSemestruAnterior();
         if (medieStudent == null) return 0f;
-        // Dacă studentul are media peste minim, primește punctaj (sau formula ta)
         return (medieStudent >= medieMinimaAcceptata)
                 ? medieStudent * getPondere()
                 : 0f;

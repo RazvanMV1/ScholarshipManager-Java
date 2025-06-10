@@ -59,7 +59,6 @@ public class BursaAcordataServiceImpl implements BursaAcordataService {
 
     @Override
     public boolean isValid(BursaAcordata ba) {
-        // Adaptează regulile după nevoi!
         return ba.getStudent() != null && ba.getBursa() != null;
     }
 }

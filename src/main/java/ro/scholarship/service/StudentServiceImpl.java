@@ -47,7 +47,6 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public boolean isValid(Student student) {
-        // Exemplu de validare (poți adăuga câte reguli vrei!)
         return student.getMedieSemestruAnterior() >= 1.0 && student.getMedieSemestruAnterior() <= 10.0
                 && student.getCnp() != null && student.getCnp().matches("\\d{13}");
     }

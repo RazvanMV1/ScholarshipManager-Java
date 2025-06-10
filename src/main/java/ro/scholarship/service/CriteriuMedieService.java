@@ -1,4 +1,3 @@
-// CriteriuMedieService.java
 package ro.scholarship.service;
 
 import ro.scholarship.model.CriteriuMedie;

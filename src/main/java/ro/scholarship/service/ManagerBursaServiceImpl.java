@@ -35,7 +35,6 @@ public class ManagerBursaServiceImpl implements ManagerBursaService {
         Bursa bursa = bursaRepository.findById(idBursa)
                 .orElseThrow(() -> new IllegalArgumentException("Bursa nu exista!"));
 
-        // Extrage criteriile asociate bursei
         CriteriuMedie criteriuMedie = bursa.getCriteriuMedie();
         CriteriuSocial criteriuSocial = bursa.getCriteriuSocial();
 
@@ -46,7 +45,6 @@ public class ManagerBursaServiceImpl implements ManagerBursaService {
             criteriuSocial = criteriuSocialRepository.findAll().stream().findFirst().orElse(null);
         }
 
-        // Acum declară-le final
         final CriteriuMedie finalCriteriuMedie = criteriuMedie;
         final CriteriuSocial finalCriteriuSocial = criteriuSocial;
         final Float medieMinima = finalCriteriuMedie != null ? finalCriteriuMedie.getMedieMinimaAcceptata() : null;
@@ -67,7 +65,7 @@ public class ManagerBursaServiceImpl implements ManagerBursaService {
                     BursaAcordata acordata = new BursaAcordata();
                     acordata.setStudent(student);
                     acordata.setBursa(bursa);
-                    acordata.setEsteActiva(1); // activă
+                    acordata.setEsteActiva(1);
 
                     float punctajTotal = 0.0f;
                     if (!bursa.getCriteriiEligibilitate().isEmpty()) {
